@@ -1,0 +1,26 @@
+/* Styles for the navbar component */
+
+nav {
+    background-color: var(--white);
+    display: flex;
+    width: 100%;
+    padding: 2rem 7.5rem;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.15);
+}
+
+.navbar-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    flex: 1 0 0;
+}
+
+.navbar-buttons {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}

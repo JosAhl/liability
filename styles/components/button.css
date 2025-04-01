@@ -1,0 +1,49 @@
+/* Styles for button components */
+
+.primary {
+    flex-shrink: 0;
+}
+
+/* Red buttons */
+
+.primary.default.red
+{
+    background: var(--Primary-Red, #E51236);
+    color: var(--Neutral-100, #F2F2F2);
+}
+
+.primary.default.red:hover {
+    background: var(--Primary-Red, #E51236);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.primary.default.red:focus {
+    box-shadow: 0 0 0 3px white, 0 0 0 6px var(--Primary-Red, #E51236);
+}
+
+.primary.pressed.red {
+    background: var(--red-pressed, #B80407);    
+    color: var(--Neutral-100);
+}
+
+/* Blue buttons */
+.primary.default.blue {
+    background: var(--Primary-Blue);
+    color: var(--Neutral-100);
+}
+
+.primary.default.blue:hover {
+    background: var(--button-hover, #0033A1);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.primary.default.blue:focus {
+    box-shadow: 0 0 0 3px white, 0 0 0 6px var(--Primary-Blue);
+}
+
+.primary.pressed.blue {
+    background: var(--Button-pressed, #00123A);
+    color: var(--Neutral-100);
+}
+
+
