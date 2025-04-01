@@ -1,13 +1,16 @@
 :root {
   --Primary-Red: #E51236;
+  --red-pressed: #B80407;
   --Primary-Blue: #001A52;
   --button-hover: #0033A1;
+  --Button-pressed: #00123A;
   --grey: #E4E9EB;
   --white: #FEFEFE;
   --black: #121212;
   --Neutral-100: #F2F2F2;
-  --red-pressed: #B80407;
-  
+  --Neutral-0: #121212;
+  --Primary-Grey: #E4E9EB;
+
 
 }
 
@@ -44,6 +47,7 @@ button {
   gap: 0.625rem;
   border-radius: 6.25rem;
   border: none;
+  font-size: var(--5, 1.25rem);
 }
 
 /* 
