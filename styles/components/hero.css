@@ -6,7 +6,23 @@
     align-items: center;
     gap: 0.625rem;
     align-self: stretch;
+  
 }
+
+.event-details-container {
+    position: relative; /* Ensures child absolute elements position relative to this */
+    overflow: visible; /* Allows EventDetails to overflow */  
+}
+
+.event-details {
+    position: absolute;
+    bottom: -5rem; /* Adjust how much it sticks out */
+    left: 50%;
+    transform: translateX(-50%); /* Center it horizontally */
+    width: 90%; /* Adjust based on design */
+    max-width: 50rem; /* Prevent it from getting too wide */
+}
+
 
 .hero-content {
     display: flex;

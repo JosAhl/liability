@@ -2,27 +2,38 @@ import "@/styles/components/timer.css";
 import React, { useState, useEffect } from "react";
 
 const Timer = () => {
-    const [eventDate, setEventDate] = useState(new Date("2025-04-23T13:00:00").getTime());
-    const [timeRemaining, setTimeRemaining] = useState(eventDate - new Date().getTime());
+    const [eventDate, setEventDate] = useState(null);
+    const [timeRemaining, setTimeRemaining] = useState(null);
 
     useEffect(() => {
-        const countdownInterval = setInterval(() => {
-            const currentTime = new Date().getTime();
-            const remainingTime = eventDate - currentTime;
-    
-            if (remainingTime <= 0) {
-                setTimeRemaining(0);
-                clearInterval(countdownInterval);
-                alert("Countdown complete!");
-            } else {
-                setTimeRemaining(remainingTime);
-            }
-        }, 1000);
+        const date = new Date("2025-04-23T13:00:00").getTime();
+        setEventDate(date);
+        setTimeRemaining(date - new Date().getTime());
+    }, []);
 
-        return () => clearInterval(countdownInterval);
-    }, [eventDate]);  // Only rerun when eventDate changes
+    useEffect(() => {
+        if (eventDate) {
+            const countdownInterval = setInterval(() => {
+                const currentTime = new Date().getTime();
+                const remainingTime = eventDate - currentTime;
 
-    // Calculate days, hours, minutes, and seconds
+                if (remainingTime <= 0) {
+                    setTimeRemaining(0);
+                    clearInterval(countdownInterval);
+                    alert("Välkomna!");
+                } else {
+                    setTimeRemaining(remainingTime);
+                }
+            }, 1000);
+
+            return () => clearInterval(countdownInterval);
+        }
+    }, [eventDate]);
+
+    // Prevent rendering until timeRemaining is set
+    if (timeRemaining === null) return null;
+
+    // Calculate time units
     const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((timeRemaining / (1000 * 60)) % 60);

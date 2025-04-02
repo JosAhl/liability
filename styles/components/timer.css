@@ -1,7 +1,7 @@
 .timer {
     display: flex;
     align-items: flex-start;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .timer > p {

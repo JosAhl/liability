@@ -12,7 +12,9 @@ const Hero = () => {
                 <p>Träffa Webbutvecklare, Digital Designers och företag. Nätverka, hitta samarbeten och skapa framtidens möjligheter!</p>
                 <Button text="Anmäl dig" className="primary" variant="default" color="blue" onClick={() => {alert('You clicked on the button!');}} />
             </div>
-            <EventDetails />
+            <div className="event-details-container">
+                <EventDetails />
+            </div>
         </section>
     );
 }

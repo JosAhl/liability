@@ -1,12 +1,16 @@
 import "@/app/globals.css";
 import Hero from "@/components/Hero";
+import AboutEvent from "@/components/AboutEvent";
 
 export default function Home() {
   return (
     < /* div className={styles.page} */>
      
       {
-        <Hero />
+        <>        
+          <Hero />
+          <AboutEvent />
+        </> 
         /* <main className={styles.main}>
         <Image
           className={styles.logo}

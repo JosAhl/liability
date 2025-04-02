@@ -49,6 +49,12 @@ button {
   border: none;
   font-size: var(--5, 1.25rem);
 }
+/* 
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+} */
 
 /* 
 @media (prefers-color-scheme: dark) {
