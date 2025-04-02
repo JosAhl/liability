@@ -30,7 +30,7 @@ return (
             </div>
             <div className="agenda-headline">
                 <div>
-                    16:00 <br />
+                    15:00 <br />
                     Avslutande sammanfattning
                     <div className="agenda-circle"></div>
                 </div>
