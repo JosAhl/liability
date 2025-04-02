@@ -2,6 +2,7 @@ import "@/app/globals.css";
 import Hero from "@/components/Hero";
 import AboutEvent from "@/components/AboutEvent";
 import Banner from "@/components/Banner";
+import Agenda from "@/components/Agenda";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
           <Hero />
           <AboutEvent />
           <Banner />
+          <Agenda />
         </> 
         /* <main className={styles.main}>
         <Image
