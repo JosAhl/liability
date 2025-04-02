@@ -1,0 +1,35 @@
+.faq-section {
+    display: flex;
+    padding: 8rem 5.5rem;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.625rem;
+    background: var(--Primary-Red, #E51236);
+    position: relative;
+    min-height: 50rem;
+}
+
+.faq, .faq-logo {
+    position: absolute;
+}
+
+.faq {
+    top: 8rem;
+    left: 5.5rem;
+}
+
+.faq-logo {
+    bottom: 8rem;
+    right: 5.5rem;
+}
+
+.faq-items {
+    display: flex;
+    width: 78.3125rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    z-index: 10;
+    padding: 12rem 0rem;
+}

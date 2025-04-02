@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import AboutEvent from "@/components/AboutEvent";
 import Banner from "@/components/Banner";
 import Agenda from "@/components/Agenda";
+import FAQ from "@/components/FAQ";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
           <AboutEvent />
           <Banner />
           <Agenda />
+          <FAQ />
         </> 
         /* <main className={styles.main}>
         <Image

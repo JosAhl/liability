@@ -8,32 +8,32 @@ return (
         </h2>
         <div className="agenda-content">
             <div className="agenda-headline">
-                <p>
+                <div>
                     13:00 <br />
                     Välkomstmingel
                     <div className="agenda-circle"></div>
-                </p>
+                </div>
             </div>
             <div className="agenda-headline">
-                <p>
+                <div>
                     13:30 <br />
                     Introduktion & Presentation
                     <div className="agenda-circle"></div>
-                </p>
+                </div>
             </div>
             <div className="agenda-headline">
-                <p>
+                <div>
                     14:00 <br />
                     Mingel & Mötesstationer
                     <div className="agenda-circle"></div>
-                </p>
+                </div>
             </div>
             <div className="agenda-headline">
-                <p>
+                <div>
                     16:00 <br />
                     Avslutande sammanfattning
                     <div className="agenda-circle"></div>
-                </p>
+                </div>
             </div>
         </div>
     
