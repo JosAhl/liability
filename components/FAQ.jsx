@@ -3,7 +3,7 @@ import Fact from "@/components/Fact";
 
 const FAQ = () => {
 return (
-    <section className="faq-section">
+    <section className="faq-section" id="faq-section">
         <img src="/FAQ.svg" alt="" className="faq" />
         <div className="faq-items">
             <Fact summary="Hur hittar jag till eventet?" text="Eventet hålls på Lindholmen Science Park, Lindholmspiren 3, Göteborg. Närmsta hållplats är Lindholmen – smidigast dit med buss eller färja!" />

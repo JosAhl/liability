@@ -2,7 +2,7 @@ import "@/styles/components/about-event.css";
 
 const AboutEvent = () => {
     return (
-        <section className="about-event">
+        <section className="about-event" id="about-event">
             <div className="about-event-image">
                 <img src="/yrgo-logo-2.png" alt="Yrgo logo" />
             </div>

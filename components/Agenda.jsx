@@ -2,7 +2,7 @@ import "@/styles/components/agenda.css"
 
 const Agenda = () => {
 return (
-    <section className="agenda">
+    <section className="agenda" id="agenda" >
         <h2 className="agenda-heading">
             Agenda
         </h2>
