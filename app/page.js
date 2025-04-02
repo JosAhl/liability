@@ -1,11 +1,12 @@
 import "@/app/globals.css";
+import Hero from "@/components/Hero";
 
 export default function Home() {
   return (
     < /* div className={styles.page} */>
      
       {
-        <p>Välkommen till LIA-eventet 2025</p>
+        <Hero />
         /* <main className={styles.main}>
         <Image
           className={styles.logo}

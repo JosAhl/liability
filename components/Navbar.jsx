@@ -2,7 +2,7 @@
 import "@/styles/components/navbar.css";
 import Button from "@/components/Button";
 
-export default function Navbar() {
+const Navbar = () => {
     return (
       <nav className="Navbar">
         <a href="">
@@ -20,3 +20,5 @@ export default function Navbar() {
       </nav>
     );
   }
+
+export default Navbar;
