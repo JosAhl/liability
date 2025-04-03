@@ -1,0 +1,54 @@
+.hero {
+    background: url('/Monster-hero.png'), lightgray 50% / cover repeat;
+    display: flex;
+    height: 65rem;
+    padding: 0rem 7.5rem;
+    align-items: center;
+    gap: 0.625rem;
+    align-self: stretch;
+  
+}
+
+.event-details-container {
+    position: relative; /* Ensures child absolute elements position relative to this */
+    overflow: visible; /* Allows EventDetails to overflow */  
+}
+
+.event-details {
+    position: absolute;
+    bottom: -5rem; /* Adjust how much it sticks out */
+    left: 50%;
+    transform: translateX(-50%); /* Center it horizontally */
+    width: 90%; /* Adjust based on design */
+    max-width: 50rem; /* Prevent it from getting too wide */
+}
+
+
+.hero-content {
+    display: flex;
+    padding-right: 3rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3.5rem;
+    flex: 1 0 0;
+}
+
+.hero-content > h1 {
+    color: var(--white);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: font/weight/Thin;
+    font-size: var(--12, 3.75rem);
+    font-style: normal;
+    font-weight: 300;
+    line-height: 4rem; /* 106.667% */
+}
+
+.hero-content > p {
+    color: var(--Neutral-White, #FEFEFE);
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: font/weight/Thin;
+    font-size: var(--8, 2rem);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 3rem; /* 150% */
+}

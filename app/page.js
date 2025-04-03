@@ -1,11 +1,22 @@
 import "@/app/globals.css";
+import Hero from "@/components/Hero";
+import AboutEvent from "@/components/AboutEvent";
+import Banner from "@/components/Banner";
+import Agenda from "@/components/Agenda";
+import FAQ from "@/components/FAQ";
 
 export default function Home() {
   return (
     < /* div className={styles.page} */>
      
       {
-        <p>Välkommen till LIA-eventet 2025</p>
+        <>        
+          <Hero />
+          <AboutEvent />
+          <Banner />
+          <Agenda />
+          <FAQ />
+        </> 
         /* <main className={styles.main}>
         <Image
           className={styles.logo}

@@ -1,0 +1,39 @@
+.banner {
+    width: 100%;
+    overflow: hidden;
+    background: var(--white);
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Make sure track is long enough */
+.banner-track {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 2rem);
+    width: max-content; /* Ensures it stretches as needed */
+}
+
+/* Ensure images scale dynamically */
+.banner-track img {
+    width: clamp(15rem, 10vw, 22rem);
+    height: auto;
+    object-fit: contain;
+}
+
+/* Smooth Infinite Scrolling */
+
+@media screen and (prefers-reduced-motion: no-preference) {
+    .banner-track {
+        animation: scroll 20s linear infinite;
+    }
+    
+}
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-33.333333333333333%); /* Moves only one full set */
+    }
+}

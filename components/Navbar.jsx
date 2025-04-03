@@ -2,16 +2,16 @@
 import "@/styles/components/navbar.css";
 import Button from "@/components/Button";
 
-export default function Navbar() {
+const Navbar = () => {
     return (
       <nav className="Navbar">
         <a href="">
             <img src="/logo.svg" alt="Yrgo logo" />
         </a>
         <div className="navbar-menu">
-            <a href="">Om eventet</a>
-            <a href="">Agenda</a>
-            <a href="">FAQ</a>
+            <a href="#about-event">Om eventet</a>
+            <a href="#agenda">Agenda</a>
+            <a href="#faq-section">FAQ</a>
         </div>
         <div className="navbar-buttons">
             <Button text="Logga in" className="secondary" variant="default"/>
@@ -20,3 +20,5 @@ export default function Navbar() {
       </nav>
     );
   }
+
+export default Navbar;
