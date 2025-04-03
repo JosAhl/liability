@@ -1,10 +1,13 @@
 details {
     display: flex;
     padding: 2rem 4rem;
+    flex-direction: column;
     gap: 2rem;
     align-self: stretch;
+    width: 100%;
     border-radius: 1rem;
     background: var(--Primary-Blue, #001A52);
+    min-width: 0;
 }
 
 details summary::marker {
@@ -28,10 +31,10 @@ summary {
     align-self: stretch;
     }
 
-details[open] {
-    display: flex;
-    flex-direction: column;
-}
+/* details[open] {
+  width: auto;
+ /*  align-self: stretch; 
+} */
 
 details > p {
     color: var(--Neutral-White, #FEFEFE);
