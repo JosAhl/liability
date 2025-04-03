@@ -1,5 +1,7 @@
+'use client'
 import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
+import { usePathname } from 'next/navigation';
 
 // If loading a variable font, you don't need to specify the font weight
 const inter = Inter({
@@ -7,18 +9,19 @@ const inter = Inter({
   display: 'swap',
 });
 
-export const metadata = {
-  title: "Yrgos LIA-event 2025",
-  description: "Mingeleventet som för samman branschen och framtidens kreatörer",
-};
-
 export default function RootLayout({ children }) {
+  const pathname = usePathname();
+  const isAuthPage = pathname.startsWith('/login');
+  const isRegPage = pathname.startsWith('/register');
+
   return (
     <html lang="en" className={inter.className}>
       <body>
-        {/* Navbar and Footer are part of the layout */}
-        <Navbar />
-        <main>{children}</main>
+        {/* Only show Navbar if not on auth pages */}
+        {!isAuthPage && !isRegPage && <Navbar />}
+        <main className={isAuthPage ? 'auth-page' : ''}>
+          {children}
+        </main>
         <footer>
           <p>© 2025 My App</p>
         </footer>

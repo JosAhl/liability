@@ -15,7 +15,7 @@ export default function Navbar() {
         </div>
         <div className="navbar-buttons">
             <Button text="Logga in" className="secondary" variant="default" href="/login"/>
-            <Button text="Anmäl mig" className="primary" variant="default" color="blue"/>
+            <Button text="Anmäl mig" className="primary" variant="default" href="/register" color="blue"/>
         </div>
       </nav>
     );
