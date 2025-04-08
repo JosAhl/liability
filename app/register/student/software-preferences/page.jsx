@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import CheckboxButtons from '@/components/CheckboxButtons';
+import FormInput from '@/components/FormInput';
 
 export default function StudentSoftwarePreferencesPage() {
   const router = useRouter();
@@ -61,6 +62,10 @@ export default function StudentSoftwarePreferencesPage() {
   const software = ['Figma', 'Adobe XD', 'Sketch', 'Photoshop', 'Illustrator'];
 
   return (
+    <div className="wrapper">
+      <div className="image-container">
+      <img src="/form-step-2.svg" alt="Progress bar step 1/6" />
+    </div>
     <div className="form-container">
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -75,16 +80,15 @@ export default function StudentSoftwarePreferencesPage() {
         </div>
         
         <div className="form-group">
-          <label htmlFor="extraSoftware">Lägg till annat program</label>
-          <textarea
-            id="extraSoftware"
-            name="extraSoftware"
-            value={formData.extraSoftware}
-            placeholder="Annat"
-            onChange={handleChange}
-            rows={4}
-            className="w-full p-2 border rounded-md"
-          />
+          <FormInput
+          type="textarea"
+          label="Lägg till annat program"
+          name="extraSoftware"
+          id="extraSoftware"
+          placeholder="Annat"
+          value={formData.extraSoftware}
+          onChange={handleChange}
+        />
         </div>
         
         <div className="form-navigation">
@@ -105,6 +109,7 @@ export default function StudentSoftwarePreferencesPage() {
           />
         </div>
       </form>
+    </div>
     </div>
   );
 }
