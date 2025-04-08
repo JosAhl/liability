@@ -8,8 +8,8 @@ import FormInput from '@/components/FormInput';
 export default function StudentSoftwarePreferencesPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    software: [],
-    extraSoftware: '',
+    skills: [],
+    extraSkills: '',
   });
 
   // Load previous form data
@@ -55,25 +55,25 @@ export default function StudentSoftwarePreferencesPage() {
     localStorage.setItem('studentFormData', JSON.stringify(updatedData));
     
     // Navigate to next step
-    router.push('/register/student/skills-preferences');
+    router.push('/register/success'); /* ----------------------------------------- lägg till nästa steg */
   };
 
   // Design software options
-  const software = ['Figma', 'Illustrator', 'Cinema 4D', 'Wordpress', 'Blender', 'Adobe XD', 'Sketch', 'Photoshop', ];
+  const skills = ['Ui/Ux Design', 'HTML', 'CSS', 'Illustrationer', 'Motion', '3D', 'Typografi', 'Filmredigering'];
 
   return (
     <div className="wrapper">
       <div className="image-container">
-      <img src="/form-step-2.svg" alt="Progress bar step 2/6" />
+      <img src="/form-step-3.svg" alt="Progress bar step 3/6" />
     </div>
     <div className="form-container">
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <h5>Program (Välj minst 1)</h5>
+          <h5>Kompetenser (Välj minst 2)</h5>
           <CheckboxButtons
-            options={software}
+            options={skills}
             name="designSoftware"
-            selectedValues={formData.software}
+            selectedValues={formData.skills}
             onChange={handleCheckboxChange}
             className="mt-2"
           />
@@ -83,10 +83,10 @@ export default function StudentSoftwarePreferencesPage() {
           <FormInput
           type="textarea"
           label="Lägg till annat program"
-          name="extraSoftware"
-          id="extraSoftware"
+          name="extraSkills"
+          id="extraSkills"
           placeholder="Annat"
-          value={formData.extraSoftware}
+          value={formData.extraSkills}
           onChange={handleChange}
         />
         </div>
@@ -97,7 +97,7 @@ export default function StudentSoftwarePreferencesPage() {
             className="primary" 
             variant="default" 
             color="blue"
-            href="/register/student/personal-info"
+            href="/register/student/software-preferences"
           />
           <Button 
             text="Fortsätt" 
