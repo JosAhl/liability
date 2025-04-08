@@ -1,0 +1,35 @@
+.form-label {
+    color: var(--Primary-Blue, #001A52);
+    font-feature-settings: 'liga' off, 'clig' off;
+    /* Headline 6 */
+    font-family: font/weight/Thin;
+    font-size: var(--5, 20px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 33px; /* 165% */
+    letter-spacing: 0.15px;
+}
+
+.form-input {
+    display: flex;
+    min-width: 150px;
+    width: 100%;
+    padding: 28px 52px 28px 40px;
+    align-items: center;
+    gap: 32px;
+    align-self: stretch;
+    border-radius: 100px;
+    border: 2px solid var(--Neutral-40);
+}
+
+.form-input::placeholder {
+    color: var(--Neutral-40, #6C6C6C);
+    font-feature-settings: 'liga' off, 'clig' off;
+    /* Headline 6 */
+    font-family: font/weight/Thin;
+    font-size: var(--5, 20px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 33px; /* 165% */
+    letter-spacing: 0.15px;
+}
