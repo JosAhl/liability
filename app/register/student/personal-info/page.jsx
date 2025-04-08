@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import CheckboxButtons from '@/components/CheckboxButtons';
+import FormInput from '@/components/FormInput';
 
 export default function StudentPersonalInfoPage() {
   const router = useRouter();
@@ -49,70 +50,69 @@ export default function StudentPersonalInfoPage() {
   };
 
   return (
+
+    <div className="wrapper">
+      <div className="image-container">
+      <img src="/form-step-1.svg" alt="Progress bar step 1/6" />
+    </div>
     <div className="form-container">
-      <h5>Namn</h5>
-      
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="first_name">Förnamn *</label>
-          <input 
-            type="text"
-            id="first_name"
-            name="first_name"
-            value={formData.first_name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="last_name">Efternamn (frivilligt)</label>
-          <input 
-            type="text"
-            id="last_name"
-            name="last_name"
-            value={formData.last_name}
-            onChange={handleChange}
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="telephone_number">Telefonnummer (frivilligt)</label>
-          <input 
-            type="tel"
-            id="telephone_number"
-            name="telephone_number"
-            value={formData.telephone_number}
-            onChange={handleChange}
-          />
-        </div>
+      <h5>Namn</h5>
+        <FormInput
+          type="text"
+          label="Förnamn"
+          name="first_name"
+          id="first_name"
+          placeholder="Alex"
+          value={formData.first_name}
+          onChange={handleChange}
+          required
+        />
+
+        <FormInput
+          type="text"
+          label="Efternamn (frivilligt)"
+          name="last_name"
+          id="last_name"
+          placeholder="Johansson"
+          value={formData.last_name}
+          onChange={handleChange}
+        />
+
+        <FormInput
+          type="tel"
+          label="Telefonnummer (frivilligt)"
+          name="telephone_number"
+          id="telephone_number"
+          placeholder="070-123 45 67"
+          value={formData.telephone_number}
+          onChange={handleChange}
+        />
 
         <h5>Skapa konto</h5>
 
-        <div className="form-group">
-          <label htmlFor="email">Email *</label>
-          <input 
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <FormInput
+          type="email"
+          label="Email"
+          name="email"
+          id="email"
+          placeholder="alex.johansson@email.com"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
 
-        <div className="form-group">
-          <label htmlFor="password">Lösenord *</label>
-          <input 
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <p>Måste innehålla minst 12 tecken</p>
-        </div>
+        <FormInput
+          type="password"
+          label="Lösenord"
+          name="password"
+          id="password"
+          placeholder="************"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+        <p className="password-text">Måste innehålla minst 12 tecken</p>
 
         <h5>Vad pluggar du? *</h5>
 
@@ -134,9 +134,7 @@ export default function StudentPersonalInfoPage() {
             color="blue"
             href="/"
           />
-        </div>
-        
-        <div className="form-navigation">
+
           <Button 
             text="Fortsätt" 
             className="primary" 
@@ -148,6 +146,7 @@ export default function StudentPersonalInfoPage() {
           />
         </div>
       </form>
+    </div>
     </div>
   );
 }
