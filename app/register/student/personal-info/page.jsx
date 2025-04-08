@@ -53,7 +53,7 @@ export default function StudentPersonalInfoPage() {
 
     <div className="wrapper">
       <div className="image-container">
-      <img src="/form-step-1.svg" alt="Progress bar step 1/6" />
+      <img src="/form-step-2.svg" alt="Progress bar step 2/6" />
     </div>
     <div className="form-container">
       <form onSubmit={handleSubmit}>
