@@ -64,7 +64,7 @@ export default function StudentSoftwarePreferencesPage() {
   return (
     <div className="wrapper">
       <div className="image-container">
-      <img src="/form-step-3.svg" alt="Progress bar step 3/6" />
+      <img src="/form-step-4.svg" alt="Progress bar step 4/6" />
     </div>
     <div className="form-container">
       <form onSubmit={handleSubmit}>
