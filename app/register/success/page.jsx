@@ -1,29 +1,34 @@
 'use client'
 import Button from '@/components/Button';
+import '@/styles/components/form.css';
 
 export default function RegistrationSuccessPage() {
   return (
     
     <div className="success-container">
-      <img src="/logo.svg" alt="Yrgo logo" />
+      <div className="image-container">
+        <img src="/form-step-6.svg" alt="Progress bar step 6/6" />
+        </div>
       <div className="success-message">
-        <img src="/logo.svg" alt="Yrgo logo" />
+      <img src="/success.svg" alt="Circled checkmark" />
         <h5>Redo för att hitta spännande praktikplatser!</h5>
       </div>
       
       <div className="success-actions">
         <Button 
-          text="Go to Login" 
+          text="<-" 
           className="primary" 
           variant="default" 
           color="blue" 
-          href="/login"
+          href="/"
         />
         <Button 
-          text="Return to Home" 
-          className="secondary" 
+          text="Fortsätt" 
+          className="primary" 
           variant="default" 
-          href="/"
+          color="red"
+          withArrow={true}
+          href="/login"
         />
       </div>
     </div>
