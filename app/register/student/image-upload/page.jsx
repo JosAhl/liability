@@ -8,8 +8,8 @@ import FormInput from "@/components/FormInput";
 export default function StudentSoftwarePreferencesPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    skills: [],
-    extraSkills: "",
+    avatar_url: "",
+    description: "",
   });
 
   // Load previous form data
@@ -30,20 +30,8 @@ export default function StudentSoftwarePreferencesPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (e) => {
-    const { name, value, checked } = e.target;
-
-    if (checked) {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: [...prev[name], value],
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: prev[name].filter((item) => item !== value),
-      }));
-    }
+  const handlePreview = (e) => {
+    image.src = URL.createObjectURL(e.target.files[0]);
   };
 
   const handleSubmit = (e) => {
@@ -58,51 +46,43 @@ export default function StudentSoftwarePreferencesPage() {
 
     // Navigate to next step
     router.push(
-      "/register/student/image-upload"
+      "/register/success"
     ); /* ----------------------------------------- lägg till nästa steg */
   };
-
-  // Design software options
-  const skills = [
-    "Ui/Ux Design",
-    "HTML",
-    "CSS",
-    "Illustrationer",
-    "Motion",
-    "3D",
-    "Typografi",
-    "Filmredigering",
-  ];
 
   return (
     <div className="wrapper">
       <div className="image-container">
-        <img src="/form-step-4.svg" alt="Progress bar step 4/6" />
+        <img src="/form-step-5.svg" alt="Progress bar step 5/6" />
       </div>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <h5>Kompetenser (Välj minst 2)</h5>
-            <CheckboxButtons
-              options={skills}
-              name="designSoftware"
-              selectedValues={formData.skills}
-              onChange={handleCheckboxChange}
-              className="mt-2"
-            />
+          <div className="image-preview">
+            <img id="image" alt="Your picture" width="100" height="100" />
           </div>
+          <h5>Namn</h5>
+          <FormInput
+            type="file"
+            label="Ladda upp profilbild"
+            name="avatar_url"
+            id="avatar_url"
+            placeholder="Ladda upp fil (png, jpeg)"
+            withImage={true}
+            value={formData.avatar_url}
+            onChange={handlePreview}
+            required
+          />
 
-          <div className="form-group">
-            <FormInput
-              type="textarea"
-              label="Lägg till annat program"
-              name="extraSkills"
-              id="extraSkills"
-              placeholder="Annat"
-              value={formData.extraSkills}
-              onChange={handleChange}
-            />
-          </div>
+          <FormInput
+            type="textarea"
+            label="Kort beskrivning om dig"
+            name="description"
+            id="description"
+            placeholder="Om mig..."
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
 
           <div className="form-navigation">
             <Button
@@ -110,8 +90,9 @@ export default function StudentSoftwarePreferencesPage() {
               className="primary"
               variant="default"
               color="blue"
-              href="/register/student/software-preferences"
+              href="/register/student/skills-preferences"
             />
+
             <Button
               text="Fortsätt"
               className="primary"
@@ -119,6 +100,7 @@ export default function StudentSoftwarePreferencesPage() {
               color="red"
               withArrow={true}
               type="submit"
+              href="/register/success"
             />
           </div>
         </form>
