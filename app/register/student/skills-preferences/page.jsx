@@ -85,7 +85,7 @@ export default function StudentSoftwarePreferencesPage() {
             <h5>Kompetenser (Välj minst 2)</h5>
             <CheckboxButtons
               options={skills}
-              name="designSoftware"
+              name="skills"
               selectedValues={formData.skills}
               onChange={handleCheckboxChange}
               className="mt-2"

@@ -83,7 +83,7 @@ export default function StudentSoftwarePreferencesPage() {
             <h5>Program (Välj minst 1)</h5>
             <CheckboxButtons
               options={software}
-              name="designSoftware"
+              name="software"
               selectedValues={formData.software}
               onChange={handleCheckboxChange}
               className="mt-2"
