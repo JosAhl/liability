@@ -8,8 +8,10 @@ import FormInput from "@/components/FormInput";
 export default function StudentSoftwarePreferencesPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    avatar_url: "",
-    description: "",
+    portfolio_github: "",
+    linkedin: "",
+    cv_url: "",
+    other_url: "",
   });
 
   // Load previous form data
@@ -30,10 +32,6 @@ export default function StudentSoftwarePreferencesPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePreview = (e) => {
-    image.src = URL.createObjectURL(e.target.files[0]);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -46,43 +44,64 @@ export default function StudentSoftwarePreferencesPage() {
 
     // Navigate to next step
     router.push(
-      "/register/student/links"
+      "/register/success"
     ); /* ----------------------------------------- lägg till nästa steg */
   };
 
   return (
     <div className="wrapper">
       <div className="image-container">
-        <img src="/form-step-5.svg" alt="Progress bar step 5/6" />
+        <img src="/form-step-6.svg" alt="Progress bar step 6/6" />
       </div>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
-          <div className="image-preview">
-            <img id="image" alt="Your picture" width="100" height="100" />
-          </div>
-          <h5>Namn</h5>
-          <FormInput
-            type="file"
-            label="Ladda upp profilbild"
-            name="avatar_url"
-            id="avatar_url"
-            placeholder="Ladda upp fil (png, jpeg)"
-            withImage={true}
-            value={formData.avatar_url}
-            onChange={handlePreview}
-            required
-          />
+          <div className="form-group">
+            <FormInput
+              type="url"
+              label="Portfolio/Github (Frivilligt)"
+              name="portfolio_github"
+              id="portfolio_github"
+              placeholder="wwww.alexportfolio.se"
+              withLink={true}
+              value={formData.portfolio_github}
+              onChange={handleChange}
+            />
 
-          <FormInput
-            type="textarea"
-            label="Kort beskrivning om dig"
-            name="description"
-            id="description"
-            placeholder="Om mig..."
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
+            <FormInput
+              type="url"
+              label="LinkedIn (Frivilligt)"
+              name="linkedin"
+              id="linkedin"
+              placeholder="https://www.linkedin.com/in/alex-johansson"
+              withLink={true}
+              value={formData.linkedin}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <FormInput
+              type="file"
+              label="CV (Frivilligt)"
+              name="cv_url"
+              id="cv_url"
+              placeholder="Ladda upp fil"
+              withImage={true}
+              value={formData.cv_url}
+              onChange={handleChange}
+            />
+
+            <FormInput
+              type="file"
+              label="Övrigt (Frivilligt)"
+              name="other_url"
+              id="other_url"
+              placeholder="Ladda upp fil"
+              withImage={true}
+              value={formData.other_url}
+              onChange={handleChange}
+            />
+          </div>
 
           <div className="form-navigation">
             <Button
@@ -90,9 +109,8 @@ export default function StudentSoftwarePreferencesPage() {
               className="primary"
               variant="default"
               color="blue"
-              href="/register/student/skills-preferences"
+              href="/register/student/image-upload"
             />
-
             <Button
               text="Fortsätt"
               className="primary"
@@ -100,7 +118,7 @@ export default function StudentSoftwarePreferencesPage() {
               color="red"
               withArrow={true}
               type="submit"
-              href="/register/student/links"
+              href="/register/success"
             />
           </div>
         </form>
