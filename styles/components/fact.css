@@ -2,7 +2,6 @@ details {
     display: flex;
     padding: 2rem 4rem;
     flex-direction: column;
-    gap: 2rem;
     align-self: stretch;
     width: 100%;
     border-radius: 1rem;
@@ -13,6 +12,10 @@ details {
 details summary::marker {
     display:none;
   }
+
+details:open {
+    gap: 2rem;
+}
 
 summary {   
     color: var(--Neutral-White, #FEFEFE);
@@ -31,11 +34,6 @@ summary {
     align-self: stretch;
     }
 
-/* details[open] {
-  width: auto;
- /*  align-self: stretch; 
-} */
-
 details > p {
     color: var(--Neutral-White, #FEFEFE);
     font-feature-settings: 'liga' off, 'clig' off;
@@ -47,6 +45,36 @@ details > p {
     border-top: 1px solid var(--white);
     padding-top: 2rem;
 }
-@media screen and (max-width: 1279px) and (min-width: 769px) {}
 
-@media screen and (max-width: 768px) {}
+@media screen and (max-width: 1279px) and (min-width: 769px) {
+    summary {
+        font-size: var(--8, 2rem);
+    }
+
+    details {
+        padding: 2rem 4rem 3rem 4rem;
+    }
+
+    details > p {
+        font-size: 1.125rem;
+        line-height: var(--6, 1.5rem); /* 133.333% */
+        letter-spacing: 0.03125rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    summary {
+        font-size: 1.5rem;
+        line-height: var(--8, 2rem); /* 133.333% */
+    }
+
+    details {
+        padding: 2rem 1.5rem;
+    }
+
+    details > p {
+        font-size: 1rem;
+        line-height: var(--6, 1.5rem); /* 150% */
+        letter-spacing: 0.03125rem;
+    }
+}
