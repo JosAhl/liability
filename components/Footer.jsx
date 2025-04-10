@@ -14,14 +14,14 @@ const Footer = () => {
 
                 </div>
                 <div className="footer-menu">
-                <a href="#about-event">Om eventet</a>
-                <a href="#agenda">Agenda</a>
-                <a href="">Kontakta oss</a>
-                <a href="#faq-section">FAQ</a>
+                    <a href="#about-event">Om eventet</a>
+                    <a href="#agenda">Agenda</a>
+                    <a href="">Kontakta oss</a>
+                    <a href="#faq-section">FAQ</a>
                 </div>
             </div>
             <div className="subfooter">
-                <h6>© 2025 – Skapad för Yrgo Branschevent</h6>
+                <p>© 2025 – Skapad för Yrgo Branschevent</p>
                 <img src="/logga-goteborgs-stad.png" alt="" />        
 
             </div>

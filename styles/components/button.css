@@ -85,3 +85,6 @@
     background-color: var(--Primary-Grey);
     box-shadow: none;
 }
+@media screen and (max-width: 1279px) and (min-width: 769px) {}
+
+@media screen and (max-width: 768px) {}

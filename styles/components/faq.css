@@ -34,3 +34,7 @@
     box-sizing: border-box;
     width: 80rem;
 }
+
+@media screen and (max-width: 1279px) and (min-width: 769px) {}
+
+@media screen and (max-width: 768px) {}
