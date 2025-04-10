@@ -48,3 +48,7 @@ z-index: 1;
     line-height: 2.0625rem; /* 165% */
     letter-spacing: 0.00938rem;
 } 
+
+@media screen and (max-width: 1279px) and (min-width: 769px) {}
+
+@media screen and (max-width: 768px) {}
