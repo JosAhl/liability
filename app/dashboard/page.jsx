@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client"; // Import your client setup
+import { login, signup } from "@/app/login/actions";
 
 export default function Dashboard() {
   const [programs, setPrograms] = useState([]); // State to store fetched programs
@@ -102,15 +103,15 @@ export default function Dashboard() {
     }
   };    
 
-  // Handle form submission
+  /* // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
   
     // Gather all form data
     const formData = new FormData(event.target);
     const userData = {
-      firstName: formData.get("first_name"),
-      lastName: formData.get("last_name"),
+      first_name: formData.get("first_name"),
+      last_name: formData.get("last_name"),
       email: formData.get("email"),
       telephone: formData.get("telephone"),
       studyProgram: formData.get("studyProgram"),
@@ -136,17 +137,19 @@ export default function Dashboard() {
       alert("Error submitting data.");
     }
   };
-  
+   */
   
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form action={signup}>
         {/* First part of the form */}
         <label htmlFor="first_name">First name</label>
         <input type="text" name="first_name" id="first_name" />
         <label htmlFor="last_name">Last name</label>
         <input type="text" name="last_name" id="last_name" />
+        <label htmlFor="password">Password</label>
+        <input type="password" name="password" id="password" required />
         <label htmlFor="telephone">Telephone</label>
         <input type="tel" name="telephone" id="telephone" />
         <label htmlFor="email">Email</label>
@@ -165,6 +168,7 @@ export default function Dashboard() {
         </fieldset>
 
         {/* Software programs section */}
+        
         <fieldset>
           <legend>Software Programs</legend>
           {programs.length > 0 ? (
@@ -251,9 +255,29 @@ export default function Dashboard() {
         <label htmlFor="övrigt">övrigt</label>
         <input type="file" name="övrigt" id="övrigt" accept=".pdf" />
 
+        {/* Inject selected programs and skills as hidden inputs */}
+{selectedPrograms.map((program, index) => (
+  <input
+    key={`program-${index}`}
+    type="hidden"
+    name="selectedPrograms"
+    value={program}
+  />
+))}
+
+{selectedSkills.map((skill, index) => (
+  <input
+    key={`skill-${index}`}
+    type="hidden"
+    name="selectedSkills"
+    value={skill}
+  />
+))}
+
+
         {/* Submit button */}
         <button type="submit" style={{ marginTop: "12px" }}>Register</button>
-      </form>
+        </form>
     </>
   );
 }
