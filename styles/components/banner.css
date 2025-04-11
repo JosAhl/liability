@@ -16,7 +16,7 @@
 
 /* Ensure images scale dynamically */
 .banner-track img {
-    width: clamp(15rem, 10vw, 22rem);
+    width: clamp(9rem, 10vw, 22rem);
     height: auto;
     object-fit: contain;
 }
@@ -37,7 +37,3 @@
         transform: translateX(-33.333333333333333%); /* Moves only one full set */
     }
 }
-
-@media screen and (max-width: 1279px) and (min-width: 769px) {}
-
-@media screen and (max-width: 768px) {}
