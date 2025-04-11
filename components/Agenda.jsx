@@ -12,6 +12,7 @@ return (
                     13:00 <br />
                     Välkomstmingel
                     <div className="agenda-circle"></div>
+                    <div className="vertical-line"></div>
                 </div>
             </div>
             <div className="agenda-headline">
@@ -35,6 +36,7 @@ return (
                     <div className="agenda-circle"></div>
                 </div>
             </div>
+            <div className="vertical-line"></div>
         </div>
     
     </section>
