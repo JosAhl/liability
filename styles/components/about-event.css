@@ -56,7 +56,7 @@ z-index: 1;
         align-items: flex-start;
         gap: 4rem;
         flex-shrink: 0;
-        padding: 0rem;
+        padding: 30rem 0rem 0rem 0rem;
 
     }
 
@@ -76,6 +76,11 @@ z-index: 1;
 }
 
 @media screen and (max-width: 768px) {
+
+    .about-event {
+      padding: 6rem 0rem 0rem 0rem;
+
+    }
 
     .about-event-description {
         padding: 8rem 1.5rem 0rem 1.5rem;
