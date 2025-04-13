@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 import Button from "@/components/Button";
 import CheckboxButtons from "@/components/CheckboxButtons";
 import FormInput from "@/components/FormInput";
@@ -8,9 +9,12 @@ import FormInput from "@/components/FormInput";
 export default function StudentSoftwarePreferencesPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    software: [],
+    selectedPrograms: [],
     extraSoftware: "",
   });
+
+  const [softwareOptions, setSoftwareOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Load previous form data
   useEffect(() => {
@@ -19,10 +23,41 @@ export default function StudentSoftwarePreferencesPage() {
       const parsedData = JSON.parse(savedData);
       setFormData((prev) => ({
         ...prev,
-        ...parsedData,
+        selectedPrograms:
+          parsedData.selectedPrograms || parsedData.software || [],
+        extraSoftware: parsedData.extraSoftware || "",
       }));
       console.log("Previous data loaded");
     }
+    /*
+  }, []);
+*/
+    // Fetch software options from database
+    async function fetchSoftware() {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase.from("software").select("name");
+
+        if (error) {
+          throw error;
+        }
+
+        if (data && data.length > 0) {
+          setSoftwareOptions(data.map((item) => item.name));
+        } else {
+          // Fallback to default options if no data
+          setSoftwareOptions(["Fig", "Illus", "Cinema", "Word"]);
+        }
+      } catch (error) {
+        console.error("Error fetching software:", error);
+        // Fallback to default options if fetch fails
+        setSoftwareOptions(["Fig", "Illus", "Cinema", "Word"]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSoftware();
   }, []);
 
   const handleChange = (e) => {
@@ -49,6 +84,42 @@ export default function StudentSoftwarePreferencesPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (formData.extraSoftware && formData.extraSoftware.trim() !== "") {
+      // Split by commas or newlines and trim whitespace
+      const extraItems = formData.extraSoftware
+        .split(/[,\n]/)
+        .map((item) => item.trim())
+        .filter((item) => item !== "");
+
+      // Add extra software to selectedPrograms
+      setFormData((prev) => ({
+        ...prev,
+        selectedPrograms: [...prev.selectedPrograms, ...extraItems],
+      }));
+
+      // Use the updated state in a callback to ensure it's included in localStorage
+      setTimeout(() => {
+        const updatedFormData = {
+          ...formData,
+          selectedPrograms: [...formData.selectedPrograms, ...extraItems],
+        };
+
+        // Merge with previous data and save
+        const previousData = JSON.parse(
+          localStorage.getItem("studentFormData") || "{}"
+        );
+        const updatedData = { ...previousData, ...updatedFormData };
+        localStorage.setItem("studentFormData", JSON.stringify(updatedData));
+
+        // Navigate to next step
+        router.push(
+          "/register/success"
+        ); /* ----------------------------------------------------------------- test for database */
+      }, 0);
+
+      return;
+    }
+
     // Merge with previous data and save
     const previousData = JSON.parse(
       localStorage.getItem("studentFormData") || "{}"
@@ -57,20 +128,8 @@ export default function StudentSoftwarePreferencesPage() {
     localStorage.setItem("studentFormData", JSON.stringify(updatedData));
 
     // Navigate to next step
-    router.push("/register/student/skills-preferences");
+    router.push("/register/student/success");
   };
-
-  // Design software options
-  const software = [
-    "Figma",
-    "Illustrator",
-    "Cinema 4D",
-    "Wordpress",
-    "Blender",
-    "Adobe XD",
-    "Sketch",
-    "Photoshop",
-  ];
 
   return (
     <div className="wrapper">
@@ -82,9 +141,9 @@ export default function StudentSoftwarePreferencesPage() {
           <div className="form-group">
             <h5>Program (Välj minst 1)</h5>
             <CheckboxButtons
-              options={software}
-              name="software"
-              selectedValues={formData.software}
+              options={softwareOptions}
+              name="selectedPrograms"
+              selectedValues={formData.selectedPrograms || []}
               onChange={handleCheckboxChange}
               className="mt-2"
             />
