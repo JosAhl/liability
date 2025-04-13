@@ -1,146 +1,194 @@
-'use server';
+"use server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "/utils/supabase/server";
 
-// Function to handle student registration
 export async function registerStudent(formData) {
   const supabase = await createClient();
 
-  // Extract common auth values
+  // Extract values from the FormData object
   const email = formData.get("email");
   const password = formData.get("password");
-
-  const fields = formData.getAll("fields"); /* from fields table */
-  
-  // Extract student-specific values
-  const first_name = formData.get("first_name"); /* from profiles table */
-  const last_name = formData.get("last_name"); /* from profiles table */
-  const telephone_number = formData.get("telephone_number"); /* from students table */
-  const software = formData.getAll("software"); // For multiple checkboxes /* from software table */
-  const focus_areas = formData.getAll("focus_areas"); /* from focus_areas table */
-  const skills = formData.get("skills"); /* from skills table */
-
-  console.log("Attempting student registration:", { email, first_name, last_name });
+  const first_name = formData.get("first_name");
+  const last_name = formData.get("last_name");
+  const telephone = formData.get("telephone");
+  const studyProgram = formData.get("studyProgram");
+  const description = formData.get("description");
+  const github = formData.get("portfolio-github");
+  const linkedin = formData.get("linkedin");
+  const selectedPrograms = formData.getAll("selectedPrograms");
+  const selectedSkills = formData.getAll("selectedSkills");
 
   try {
-    // Step 1: Sign up the user in Auth
+    // Step 1: Sign up the user
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          first_name: first_name,
-          last_name: last_name
+          first_name,
+          last_name,
         },
       },
     });
 
     if (error) {
-      console.error("Student signup error:", error.message);
-      return redirect("/register/error?message=" + encodeURIComponent(error.message));
+      console.error("Signup error:", error.message);
+      return redirect("/error");
     }
 
     const userId = data.user.id;
-    console.log("Student user created with ID:", userId);
+    console.log("User created with ID:", userId);
 
-    // Small delay to ensure auth is processed
+    // Short delay to ensure auth is complete
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Step 2: Insert student profile data
-    const { error: profileError } = await supabase
-      .from("student_profiles") // Create this table in Supabase
-      .insert([{ 
-        id: userId,
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        telephone_number: telephone_number,
-        software: software,
-        skills: skills,
-        registration_date: new Date().toISOString()
-      }]);
-
-    if (profileError) {
-      console.error("Student profile insert error:", profileError.message, profileError.details);
-      return redirect("/register/error?message=" + encodeURIComponent("Error creating profile"));
-    }
-
-    console.log("Student profile created successfully");
-    revalidatePath("/", "layout");
-    return redirect("/register/success");
-  } catch (err) {
-    console.error("Unexpected error:", err);
-    return redirect("/register/error");
-  }
-}
-/*
-// Function to handle company registration
-export async function registerCompany(formData) {
-  const supabase = await createClient();
-
-  // Extract common auth values
-  const email = formData.get("email");
-  const password = formData.get("password");
-  
-  // Extract company-specific values
-  const companies = formData.get("companies");
-  const contactPerson = formData.get("contactPerson");
-  const phone = formData.get("phone");
-  const industry = formData.get("industry");
-  // Add any other company-specific fields
-
-  console.log("Attempting company registration:", { email, companyName, contactPerson });
-
-  try {
-    // Step 1: Sign up the user in Auth
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          company_name: companyName,
-          contact_person: contactPerson,
-          user_type: "company"
-        },
+    // Insert student data
+    const { error: studentError } = await supabase.from("students").insert([
+      {
+        telephone_number: telephone,
+        description: description,
+        linkedin: linkedin,
+        profile_id: userId,
+        portfolio_github: github,
+        study_program: studyProgram,
       },
-    });
+    ]);
 
-    if (error) {
-      console.error("Company signup error:", error.message);
-      return redirect("/register/error?message=" + encodeURIComponent(error.message));
+    if (studentError) {
+      console.error(
+        "Student insert error:",
+        studentError.message,
+        studentError.details
+      );
+    } else {
+      console.log("Student created successfully");
     }
 
-    const userId = data.user.id;
-    console.log("Company user created with ID:", userId);
+    // Process skills
+    for (const skillName of selectedSkills) {
+      let skillId = null;
 
-    // Small delay to ensure auth is processed
-    await new Promise((resolve) => setTimeout(resolve, 500));
+      const { data: skillData, error: skillLookupError } = await supabase
+        .from("skills")
+        .select("id")
+        .eq("name", skillName)
+        .single();
 
-    // Step 2: Insert company profile data
-    const { error: profileError } = await supabase
-      .from("company_profiles") // Create this table in Supabase
-      .insert([{ 
-        id: userId,
-        company_name: companyName,
-        contact_person: contactPerson,
-        email: email,
-        phone: phone,
-        industry: industry,
-        registration_date: new Date().toISOString()
-      }]);
+      if (!skillLookupError && skillData) {
+        // Found existing skill
+        skillId = skillData.id;
 
-    if (profileError) {
-      console.error("Company profile insert error:", profileError.message, profileError.details);
-      return redirect("/register/error?message=" + encodeURIComponent("Error creating profile"));
+        const { error: profileSkillError } = await supabase
+          .from("profile_skill")
+          .insert([{ profile_id: userId, skill_id: skillId }]);
+
+        if (profileSkillError) {
+          console.error(
+            "Failed to link skill to profile:",
+            profileSkillError.message
+          );
+        } else {
+          console.log(`Linked skill "${skillName}" to user ${userId}`);
+        }
+      } else {
+        // Skill not found, insert into extra_skills
+        const { data: extraSkillData, error: extraSkillError } = await supabase
+          .from("extra_skills")
+          .insert([{ name: skillName }])
+          .select("id")
+          .single();
+
+        if (extraSkillError) {
+          console.error(
+            "Failed to insert extra skill:",
+            extraSkillError.message
+          );
+          continue;
+        }
+
+        const extraSkillId = extraSkillData.id;
+
+        const { error: profileExtraSkillError } = await supabase
+          .from("profile_extra_skill")
+          .insert([{ profile_id: userId, extra_skill_id: extraSkillId }]);
+
+        if (profileExtraSkillError) {
+          console.error(
+            "Failed to link extra skill to profile:",
+            profileExtraSkillError.message
+          );
+        } else {
+          console.log(`Linked EXTRA skill "${skillName}" to user ${userId}`);
+        }
+      }
     }
 
-    console.log("Company profile created successfully");
+    // Process software/programs
+    for (const softwareName of selectedPrograms) {
+      let softwareId = null;
+
+      const { data: softwareData, error: softwareLookupError } = await supabase
+        .from("software")
+        .select("id")
+        .eq("name", softwareName)
+        .single();
+
+      if (!softwareLookupError && softwareData) {
+        // Found existing software
+        softwareId = softwareData.id;
+
+        const { error: profileSoftwareError } = await supabase
+          .from("profile_software")
+          .insert([{ profile_id: userId, software_id: softwareId }]);
+
+        if (profileSoftwareError) {
+          console.error(
+            "Failed to link software to profile:",
+            profileSoftwareError.message
+          );
+        } else {
+          console.log(`Linked software "${softwareName}" to user ${userId}`);
+        }
+      } else {
+        // Software not found, insert into extra_software
+        const { data: extraSoftwareData, error: extraSoftwareError } =
+          await supabase
+            .from("extra_software")
+            .insert([{ name: softwareName }])
+            .select("id")
+            .single();
+
+        if (extraSoftwareError) {
+          console.error(
+            "Failed to insert extra software:",
+            extraSoftwareError.message
+          );
+          continue;
+        }
+
+        const extraSoftwareId = extraSoftwareData.id;
+        const { error: profileExtraSoftwareError } = await supabase
+          .from("profile_extra_software")
+          .insert([{ profile_id: userId, extra_software_id: extraSoftwareId }]);
+
+        if (profileExtraSoftwareError) {
+          console.error(
+            "Failed to link extra software to profile:",
+            profileExtraSoftwareError.message
+          );
+        } else {
+          console.log(
+            `Linked EXTRA software "${softwareName}" to user ${userId}`
+          );
+        }
+      }
+    }
+
     revalidatePath("/", "layout");
-    return redirect("/register/success");
+    return redirect("/login");
   } catch (err) {
     console.error("Unexpected error:", err);
-    return redirect("/register/error");
+    return redirect("/error");
   }
 }
-*/
