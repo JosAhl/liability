@@ -29,9 +29,7 @@ export default function StudentSoftwarePreferencesPage() {
       }));
       console.log("Previous data loaded");
     }
-    /*
-  }, []);
-*/
+
     // Fetch software options from database
     async function fetchSoftware() {
       try {
@@ -103,22 +101,9 @@ export default function StudentSoftwarePreferencesPage() {
     };
 
     localStorage.setItem("studentFormData", JSON.stringify(updatedData));
-    router.push("/register/success");
+    router.push("/register/student/skills-preferences");
   };
 
-  /*
-    // Merge with previous data and save
-    const previousData = JSON.parse(
-      localStorage.getItem("studentFormData") || "{}"
-    );
-    const updatedData = { ...previousData, ...formData };
-    localStorage.setItem("studentFormData", JSON.stringify(updatedData));
-
-    // Navigate to next step
-    router.push("/register/success");
-  };
-
-  */
   return (
     <div className="wrapper">
       <div className="image-container">

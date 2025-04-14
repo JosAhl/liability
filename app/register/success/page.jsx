@@ -23,85 +23,54 @@ export default function RegistrationSuccessPage() {
     setIsSubmitting(true);
 
     try {
-      // Create a FormData object to send to the server action
       const submitData = new FormData();
 
-      Object.entries(formData).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          const shouldStringify =
-            key === "selectedPrograms" ||
-            key === "extraSoftware" ||
-            key === "selectedSkills";
+      const dataMapping = {
+        email: "email",
+        password: "password",
+        first_name: "first_name",
+        last_name: "last_name",
+        avatar_url: "avatar_url",
+        phone: "telephone_number",
+        description: "description",
+        github: "portfolio_github",
+        linkedin: "linkedin",
+        cv_url: "cv_url",
+        other_url: "other_url",
+        program: "studyProgram",
+        selectedPrograms: "selectedPrograms",
+        skills: "selectedSkills",
+      };
 
-          if (shouldStringify) {
-            submitData.append(key, JSON.stringify(value));
+      // Process the form data
+      Object.entries(formData).forEach(([key, value]) => {
+        const serverKey = dataMapping[key] || key;
+
+        if (Array.isArray(value)) {
+          if (key === "selectedPrograms" || key === "skills") {
+            submitData.append(serverKey, JSON.stringify(value));
+            console.log(`Adding ${serverKey}:`, JSON.stringify(value));
           } else {
-            // fallback: append each item individually
             value.forEach((item) => {
-              submitData.append(key, item);
+              submitData.append(serverKey, item);
             });
           }
         } else if (value !== null && value !== undefined) {
-          const fieldName =
-            key === "phone"
-              ? "telephone_number"
-              : key === "github"
-              ? "portfolio-github"
-              : key === "program"
-              ? "studyProgram"
-              : key;
-
-          submitData.append(fieldName, value.toString());
+          submitData.append(serverKey, value.toString());
         }
       });
 
-      /*
-      // Add each field from the collected data to the FormData object
-      Object.entries(formData).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          // Handle arrays (like fields, software, focus_areas)
-          value.forEach((item) => {
-            if (key === "skills" || key === "selectedSkills") {
-              submitData.append("selectedSkills", item);
-            } else if (
-              key === "software" ||
-              key === "programs" ||
-              key === "selectedPrograms"
-            ) {
-              submitData.append("selectedPrograms", item);
-            } else {
-              submitData.append(key, item);
-            }
-          });
-        } else if (value !== null && value !== undefined) {
-          const fieldName =
-            key === "phone"
-              ? /*"telephone" "telephone_number"
-              : key === "github"
-              ? "portfolio-github"
-              : key === "program"
-              ? "studyProgram"
-              : key;
-
-          submitData.append(fieldName, value.toString());
-        }
-      });
-      */
-
-      // Make sure userType is set
+      // Check "student" or "företag"
       if (!submitData.get("userType")) {
         submitData.append("userType", "student");
       }
 
-      console.log("Submitting data:", Object.fromEntries(submitData));
-
-      // Call the server action to register the student
       await registerStudent(submitData);
 
       // Clear localStorage after successful submission
       localStorage.removeItem("studentFormData");
 
-      router.push("/login"); //---------------------------------------------------------
+      router.push("/login");
     } catch (error) {
       console.error("Error submitting form:", error);
       setIsSubmitting(false);
@@ -135,7 +104,6 @@ export default function RegistrationSuccessPage() {
             type="submit"
             disabled={isSubmitting}
             withArrow={true}
-            //href="/login"
           />
         </div>
       </form>

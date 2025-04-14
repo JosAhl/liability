@@ -1,16 +1,20 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 import Button from "@/components/Button";
 import CheckboxButtons from "@/components/CheckboxButtons";
 import FormInput from "@/components/FormInput";
 
-export default function StudentSoftwarePreferencesPage() {
+export default function StudentSkillsPreferencesPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     skills: [],
     extraSkills: "",
   });
+
+  const [skillOptions, setSkillOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Load previous form data
   useEffect(() => {
@@ -19,10 +23,56 @@ export default function StudentSoftwarePreferencesPage() {
       const parsedData = JSON.parse(savedData);
       setFormData((prev) => ({
         ...prev,
-        ...parsedData,
+        skills: parsedData.skills || [],
+        extraSkills: parsedData.extraSkills || "",
       }));
       console.log("Previous data loaded");
     }
+
+    // Fetch skill options from database
+    async function fetchSkills() {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase.from("skills").select("name");
+
+        if (error) {
+          throw error;
+        }
+
+        if (data && data.length > 0) {
+          setSkillOptions(data.map((item) => item.name));
+        } else {
+          // Fallback to default options if no data
+          setSkillOptions([
+            "Ui/Ux Design",
+            "HTML",
+            "CSS",
+            "Illustrationer",
+            "Motion",
+            "3D",
+            "Typografi",
+            "Filmredigering",
+          ]);
+        }
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+        // Fallback to default options if fetch fails
+        setSkillOptions([
+          "Ui/Ux",
+          "HTML",
+          "CSS",
+          "Illustrationer",
+          "Motion",
+          "3D",
+          "Typo",
+          "Film",
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSkills();
   }, []);
 
   const handleChange = (e) => {
@@ -49,30 +99,27 @@ export default function StudentSoftwarePreferencesPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const extraItems = formData.extraSkills
+      .split(/[,\n]/)
+      .map((item) => item.trim())
+      .filter((item) => item !== "");
+
+    // Combine skills + extra skills here
+    const combinedSkills = [...formData.skills, ...extraItems];
+
     // Merge with previous data and save
     const previousData = JSON.parse(
       localStorage.getItem("studentFormData") || "{}"
     );
-    const updatedData = { ...previousData, ...formData };
+    const updatedData = {
+      ...previousData,
+      skills: combinedSkills,
+      extraSkills: formData.extraSkills,
+    };
+
     localStorage.setItem("studentFormData", JSON.stringify(updatedData));
-
-    // Navigate to next step
-    router.push(
-      "/register/student/image-upload"
-    ); /* ----------------------------------------- lägg till nästa steg */
+    router.push("/register/success");
   };
-
-  // Design software options
-  const skills = [
-    "Ui/Ux Design",
-    "HTML",
-    "CSS",
-    "Illustrationer",
-    "Motion",
-    "3D",
-    "Typografi",
-    "Filmredigering",
-  ];
 
   return (
     <div className="wrapper">
@@ -83,19 +130,23 @@ export default function StudentSoftwarePreferencesPage() {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <h5>Kompetenser (Välj minst 2)</h5>
-            <CheckboxButtons
-              options={skills}
-              name="skills"
-              selectedValues={formData.skills}
-              onChange={handleCheckboxChange}
-              className="mt-2"
-            />
+            {loading ? (
+              <p>Laddar kompetenser...</p>
+            ) : (
+              <CheckboxButtons
+                options={skillOptions}
+                name="skills"
+                selectedValues={formData.skills || []}
+                onChange={handleCheckboxChange}
+                className="mt-2"
+              />
+            )}
           </div>
 
           <div className="form-group">
             <FormInput
               type="textarea"
-              label="Lägg till annat program"
+              label="Lägg till annan kompetens"
               name="extraSkills"
               id="extraSkills"
               placeholder="Annat"
@@ -119,6 +170,7 @@ export default function StudentSoftwarePreferencesPage() {
               color="red"
               withArrow={true}
               type="submit"
+              disabled={loading}
             />
           </div>
         </form>

@@ -27,11 +27,11 @@ export async function registerStudent(formData) {
   const studyProgram = formData.get("studyProgram");
 
   // For table "profile_software" and "profile_extra_software"
-  //const selectedPrograms = formData.getAll("selectedPrograms");
   const selectedPrograms = JSON.parse(formData.get("selectedPrograms"));
 
   // For table "profile_skill" and "profile_extra_skill"
-  const selectedSkills = formData.getAll("selectedSkills");
+  //const selectedSkills = formData.getAll("selectedSkills");
+  const selectedSkills = JSON.parse(formData.get("selectedSkills"));
 
   try {
     // Step 1: Sign up the user
@@ -114,66 +114,7 @@ export async function registerStudent(formData) {
 
     console.log(`Linked field "${field}" to user ${userId}`);
 
-    // Process skills
-    for (const skillName of selectedSkills) {
-      let skillId = null;
-
-      const { data: skillData, error: skillLookupError } = await supabase
-        .from("skills")
-        .select("id")
-        .eq("name", skillName)
-        .single();
-
-      if (!skillLookupError && skillData) {
-        // Found existing skill
-        skillId = skillData.id;
-
-        const { error: profileSkillError } = await supabase
-          .from("profile_skill")
-          .insert([{ profile_id: userId, skill_id: skillId }]);
-
-        if (profileSkillError) {
-          console.error(
-            "Failed to link skill to profile:",
-            profileSkillError.message
-          );
-        } else {
-          console.log(`Linked skill "${skillName}" to user ${userId}`);
-        }
-      } else {
-        // Skill not found, insert into extra_skills
-        const { data: extraSkillData, error: extraSkillError } = await supabase
-          .from("extra_skills")
-          .insert([{ name: skillName }])
-          .select("id")
-          .single();
-
-        if (extraSkillError) {
-          console.error(
-            "Failed to insert extra skill:",
-            extraSkillError.message
-          );
-          continue;
-        }
-
-        const extraSkillId = extraSkillData.id;
-
-        const { error: profileExtraSkillError } = await supabase
-          .from("profile_extra_skill")
-          .insert([{ profile_id: userId, extra_skill_id: extraSkillId }]);
-
-        if (profileExtraSkillError) {
-          console.error(
-            "Failed to link extra skill to profile:",
-            profileExtraSkillError.message
-          );
-        } else {
-          console.log(`Linked EXTRA skill "${skillName}" to user ${userId}`);
-        }
-      }
-    }
-
-    // Step 4: Process selected programs (software)
+    // Step 3: Process selected programs (software)
     if (selectedPrograms && selectedPrograms.length > 0) {
       console.log("Processing selected programs:", selectedPrograms);
 
@@ -196,7 +137,7 @@ export async function registerStudent(formData) {
         softwareMap.set(software.name.toLowerCase(), software.id);
       });
 
-      // Separate selected programs into known software and extra software
+      // Separate existing and extra software
       const matchedSoftwareIds = [];
       const extraSoftwareNames = [];
 
@@ -307,6 +248,145 @@ export async function registerStudent(formData) {
 
         console.log(
           "Inserted extra software into profile_extra_software:",
+          allExtras
+        );
+      }
+    }
+
+    // Step 4: Process selected skills
+    if (selectedSkills && selectedSkills.length > 0) {
+      console.log("Processing selected skills:", selectedSkills);
+
+      // Fetch all skills from the "skills" table
+      const { data: allSkills, error: skillsError } = await supabase
+        .from("skills")
+        .select("id, name");
+
+      if (skillsError) {
+        console.error(
+          "Error fetching skills from database:",
+          skillsError.message
+        );
+        throw skillsError;
+      }
+
+      // Create a map of skill names to IDs
+      const skillsMap = new Map();
+      allSkills.forEach((skill) => {
+        skillsMap.set(skill.name.toLowerCase(), skill.id);
+      });
+
+      // Separate existing and extra skills
+      const matchedSkillIds = [];
+      const extraSkillNames = [];
+
+      selectedSkills.forEach((skill) => {
+        const normalizedSkill = skill.toLowerCase();
+        if (skillsMap.has(normalizedSkill)) {
+          matchedSkillIds.push(skillsMap.get(normalizedSkill));
+        } else {
+          extraSkillNames.push(skill);
+        }
+      });
+
+      // Insert matched skills into "profile_skill"
+      if (matchedSkillIds.length > 0) {
+        const { error: profileSkillError } = await supabase
+          .from("profile_skill")
+          .insert(
+            matchedSkillIds.map((skillId) => ({
+              profile_id: userId,
+              skill_id: skillId,
+            }))
+          );
+
+        if (profileSkillError) {
+          console.error(
+            "Error inserting into profile_skill:",
+            profileSkillError.message
+          );
+          throw profileSkillError;
+        }
+
+        console.log(
+          "Inserted matched skills into profile_skill:",
+          matchedSkillIds
+        );
+      }
+
+      // Handle extra skills
+      if (extraSkillNames.length > 0) {
+        console.log("Processing extra skills:", extraSkillNames);
+
+        // Check if extra skills already exist in the "extra_skills" table
+        const { data: existingExtras, error: existingExtrasError } =
+          await supabase
+            .from("extra_skills")
+            .select("id, name")
+            .in("name", extraSkillNames);
+
+        if (existingExtrasError) {
+          console.error(
+            "Error fetching existing extra skills:",
+            existingExtrasError.message
+          );
+          throw existingExtrasError;
+        }
+
+        // Create a map of existing extra skill names to IDs
+        const existingExtrasMap = new Map();
+        existingExtras.forEach((extra) => {
+          existingExtrasMap.set(extra.name.toLowerCase(), extra.id);
+        });
+
+        // Find new extra skills to insert
+        const newExtraSkills = extraSkillNames.filter(
+          (name) => !existingExtrasMap.has(name.toLowerCase())
+        );
+
+        // Insert new extra skills into the "extra_skills" table
+        let insertedExtras = [];
+        if (newExtraSkills.length > 0) {
+          const { data: newExtras, error: newExtrasError } = await supabase
+            .from("extra_skills")
+            .insert(newExtraSkills.map((name) => ({ name })))
+            .select("id, name");
+
+          if (newExtrasError) {
+            console.error(
+              "Error inserting new extra skills:",
+              newExtrasError.message
+            );
+            throw newExtrasError;
+          }
+
+          insertedExtras = newExtras;
+          console.log("Inserted new extra skills:", newExtras);
+        }
+
+        // Combine existing and newly inserted extra skills
+        const allExtras = [...existingExtras, ...insertedExtras];
+
+        // Insert into "profile_extra_skill"
+        const { error: profileExtraSkillError } = await supabase
+          .from("profile_extra_skill")
+          .insert(
+            allExtras.map((extra) => ({
+              profile_id: userId,
+              extra_skill_id: extra.id,
+            }))
+          );
+
+        if (profileExtraSkillError) {
+          console.error(
+            "Error inserting into profile_extra_skill:",
+            profileExtraSkillError.message
+          );
+          throw profileExtraSkillError;
+        }
+
+        console.log(
+          "Inserted extra skills into profile_extra_skill:",
           allExtras
         );
       }
