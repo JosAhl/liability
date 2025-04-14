@@ -6,24 +6,20 @@ const ProfileCard = ({ profile }) => {
     const allTags = ["Design", "UX", "UI", "Frontend", "React", "CSS", "NextJS"];
     const [visibleTags, setVisibleTags] = useState([]);
     const tagsContainerRef = useRef(null);
-    const detailsRef = useRef(null);
-    const ctaRef = useRef(null);
 
     useEffect(() => {
         const calculateVisibleTags = () => {
-            if (!tagsContainerRef.current || !detailsRef.current || !ctaRef.current) return;
+            if (!tagsContainerRef.current) return;
             
-            const detailsWidth = detailsRef.current.offsetWidth;
-            const ctaWidth = ctaRef.current.offsetWidth;
-            const availableWidth = detailsWidth - ctaWidth - 16; // 16px for gap
+            const containerWidth = tagsContainerRef.current.offsetWidth;
             
             // Calculate average tag width (including gap)
-            const tagWidth = 72; // Approximate width of a tag (56px) + gap (16px)
+            const tagWidth = 72; // More realistic value for tag width + gap
             
             // Calculate how many tags can fit
-            const tagsToShow = Math.max(0, Math.floor(availableWidth / tagWidth));
+            const tagsToShow = Math.max(1, Math.floor(containerWidth / tagWidth));
             
-            // Update visible tags
+            // Update visible tags - ensure at least one tag shows
             setVisibleTags(allTags.slice(0, tagsToShow));
         };
         
@@ -40,24 +36,31 @@ const ProfileCard = ({ profile }) => {
         <div className="profile-card">
             <div className="profile-info">
                 <div className='profile-img-container'>
-                <img className='profile-img' src="" alt=""/>
-                <a className='favourite'>
-                    <img src="icon/heart.png" alt="" />
-                    <p className='favourite-save'>Spara</p>
-                </a>
+                    <img className='profile-img' src="" alt=""/>
+                    <a className='favourite'>
+                        <img src="icon/heart.png" alt="" />
+                        <p className='favourite-save'>Spara</p>
+                    </a>
                 </div>
                 <div className='profile-description'>
                     <h2 className='profile-heading'>Förnamn Efternamn</h2>
                     <p className='profile-p'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem tempora, corrupti non pariatur cum tempore ipsam ducimus perspiciatis doloremque ut aut ipsa veritatis enim nostrum. Cupiditate eligendi accusamus veritatis velit deserunt quos aperiam alias omnis explicabo soluta, id consequatur laudantium ut officiis. Quia facere necessitatibus ex harum consectetur quasi animi.</p>
                 </div>
             </div>
-            <div className="profile-details" ref={detailsRef}>
-                <div className="tags-container" ref={tagsContainerRef}>
-                    {visibleTags.map((tag, index) => (
-                        <span key={index} className='tags'>{tag}</span>
-                    ))}
+            <div className="tags-container" ref={tagsContainerRef}>
+                {visibleTags.map((tag, index) => (
+                    <span key={index} className='tags'>{tag}</span>
+                ))}
+            </div>
+            <div className='profile-contact-details'>
+                <div className='profile-contact'>
+                    <p>Kontaktuppgifter:</p>
+                    <div className='profile-social-media'>
+                        <a href=""><img src="icon/EnvelopeSimple.png" alt="" /></a>
+                        <a href=""><img src="icon/LinkedinLogo.png" alt="" /></a>
+                    </div>
                 </div>
-                <a href="" className='CTA' ref={ctaRef}>Öppna profil</a>
+                <a href="" className='CTA'>Öppna profil</a>
             </div>
         </div>
     );
