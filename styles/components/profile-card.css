@@ -15,11 +15,30 @@
     display: flex;
     width: 8rem;
     height: 8rem;
-    padding: 6rem 6rem 0.5rem 0.5rem;
     align-items: center;
     aspect-ratio: 1/1;
     border-radius: 0.5rem;
     background: var(--Primary-Grey, #E4E9EB);
+}
+
+.profile-img-container {
+    position: relative;
+}
+
+.favourite {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+}
+
+.favourite-save {
+    display: none;
+    color: var(--Primary-Blue, #001A52);
+    font-size: var(--4, 1rem);
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase;
 }
 
 .profile-info {
@@ -32,7 +51,6 @@
 .profile-description {
     display: flex;
     flex-direction: column;
-    height: 8rem;
     width: 100%;
     gap: 0.75rem;
 }
@@ -115,4 +133,35 @@
     line-height: 1rem;
     letter-spacing: 0.00625rem;
     white-space: nowrap;
+}
+
+@media screen and (min-width: 769px) {
+
+    .profile-img-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem;
+        position: unset;
+    }
+    .profile-img {
+        flex-direction: column;
+        height: fit-content;
+    }
+
+    .favourite{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+        padding: 0.5rem;
+        position: unset;
+    }
+
+    .favourite-save {
+        display: flex;
+
+    } 
 }
