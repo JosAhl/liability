@@ -20,7 +20,6 @@ details:open {
 summary {   
     color: var(--Neutral-White, #FEFEFE);
     font-feature-settings: 'liga' off, 'clig' off;
-    font-family: font/weight/Thin;
     font-size: var(--10, 3rem);
     font-style: normal;
     font-weight: 300;
@@ -37,7 +36,6 @@ summary {
 details > p {
     color: var(--Neutral-White, #FEFEFE);
     font-feature-settings: 'liga' off, 'clig' off;
-    font-family: font/weight/Thin;
     font-size: var(--6, 1.5rem);
     font-style: normal;
     font-weight: 400;
