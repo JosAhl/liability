@@ -29,7 +29,6 @@ z-index: 1;
     font-feature-settings: 'liga' off, 'clig' off;
     
     /* Headline 2 */
-    font-family: font/weight/Thin;
     font-size: var(--12, 3.75rem);
     font-style: normal;
     font-weight: 300;
@@ -41,7 +40,6 @@ z-index: 1;
     font-feature-settings: 'liga' off, 'clig' off;
 
     /* Headline 6 */
-    font-family: font/weight/Thin;
     font-size: var(--5, 1.25rem);
     font-style: normal;
     font-weight: 400;
