@@ -1,0 +1,21 @@
+.people > img {
+    width: 5rem;
+    height: 5rem;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid var(--Neutral-White, #FEFEFE);
+    
+    /* Overlapping effect */
+    margin-left: -1.5rem; /* Adjust this value to control the overlap */
+}
+
+/* Ensure the first image doesn’t have a negative margin */
+.people > img:first-child {
+    margin-left: 0;
+}
+
+@media screen and (max-width: 1279px) and (min-width: 769px) {}
+
+@media screen and (max-width: 768px) {}

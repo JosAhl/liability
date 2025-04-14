@@ -1,10 +1,23 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import "@/app/globals.css";
+import Hero from "@/components/Hero";
+import AboutEvent from "@/components/AboutEvent";
+import Banner from "@/components/Banner";
+import Agenda from "@/components/Agenda";
+import FAQ from "@/components/FAQ";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
+    < /* div className={styles.page} */>
+     
+      {
+        <>        
+          <Hero />
+          <AboutEvent />
+          <Banner />
+          <Agenda />
+          <FAQ />
+        </> 
+        /* <main className={styles.main}>
         <Image
           className={styles.logo}
           src="/next.svg"
@@ -89,7 +102,8 @@ export default function Home() {
           />
           Go to nextjs.org →
         </a>
-      </footer>
-    </div>
+      </footer>  */
+    }
+    </>
   );
 }

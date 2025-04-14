@@ -1,0 +1,90 @@
+/* Styles for button components */
+
+
+/* Primary button styles */
+.primary {
+    flex-shrink: 0;
+}
+
+.arrow > img {
+    width: 1.5rem;
+    height: 1.5rem;
+    aspect-ratio: 1/1;
+}
+
+.arrow {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+
+}
+
+/* Primary red buttons */
+
+.primary.default.red
+{
+    background: var(--Primary-Red);
+    color: var(--Neutral-100);
+}
+
+.primary.default.red:hover {
+    background: var(--Primary-Red);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.primary.default.red:focus-visible {
+    box-shadow: 0 0 0 3px var(--white), 0 0 0 6px var(--Primary-Red);
+}
+
+.primary.default.red:active {
+    background: var(--red-pressed);    
+    color: var(--Neutral-100);
+}
+
+/* Primary blue buttons */
+.primary.default.blue {
+    background: var(--Primary-Blue);
+    color: var(--Neutral-100);
+}
+
+.primary.default.blue:hover {
+    background: var(--button-hover);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.primary.default.blue:focus-visible {
+    box-shadow: 0 0 0 3px white, 0 0 0 6px var(--Primary-Blue);
+}
+
+.primary.default.blue:active {
+    background: var(--Button-pressed);
+    color: var(--Neutral-100);
+}
+
+/* Secondary button styles */
+
+.secondary {
+    flex-shrink: 0;
+}
+
+.secondary.default {
+    border: 1px solid var(--Primary-Blue);
+    background: #FFF;
+}
+
+.secondary.default:hover {
+    box-shadow: 0px 0px 0px 3px var(--Primary-Blue), 0px 2px 3px 0px rgba(0, 0, 0, 0.25);
+} 
+
+.secondary.default:focus-visible {
+    outline: 1px dashed #000;
+    outline-offset: 0.5rem; 
+}
+
+.secondary.default:active {
+    background-color: var(--Primary-Grey);
+    box-shadow: none;
+}
+@media screen and (max-width: 1279px) and (min-width: 769px) {}
+
+@media screen and (max-width: 768px) {}

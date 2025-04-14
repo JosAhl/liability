@@ -1,0 +1,76 @@
+:root {
+  --Primary-Red: #E51236;
+  --red-pressed: #B80407;
+  --Primary-Blue: #001A52;
+  --button-hover: #0033A1;
+  --Button-pressed: #00123A;
+  --grey: #E4E9EB;
+  --white: #FEFEFE;
+  --black: #121212;
+  --Neutral-100: #F2F2F2;
+  --Neutral-0: #121212;
+  --Primary-Grey: #E4E9EB;
+
+
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--black);
+  background: var(--white);
+  font-family: Inter, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  display: flex;
+  padding: 1rem 3rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 6.25rem;
+  border: none;
+  font-size: var(--5, 1.25rem);
+}
+
+footer {
+  display: flex;
+  height: fit-content;
+/*   height: 51.9375rem; */
+  padding: 12.25rem 7.5rem 2.5rem 7.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  background: var(--Primary-Blue, #001A52);
+}
+
+@media screen and (max-width: 1279px) and (min-width: 769px) {
+
+footer {
+  padding: 8rem 3rem 4rem 3rem;
+}
+              
+}
+
+@media screen and (max-width: 768px) {
+  footer {
+    padding: 4rem 1.5rem 2.5rem 1.5rem;
+  }
+}
