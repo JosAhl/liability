@@ -8,8 +8,8 @@ const Footer = () => {
                     <img src="/footer-logo.svg" alt="" />
                     <p>Denna plattform kopplar samman studerande och företag för en smidig LIA-process. Vi följer WCAG 2.1 AA och GDPR för en säker och tillgänglig upplevelse.</p>
                     <div className="social-media-logos">
-                        <img src="/icon/fb.png" alt="" />
-                        <img src="/icon/instagram.svg" alt="" />
+                        <a href="https://www.facebook.com/yrgogoteborg/"><img src="/icon/fb.png" alt="" /></a>
+                        <a href="https://www.linkedin.com/school/yrgo"><img src="/icon/linkedin.png" alt="" /></a>
                     </div>
 
                 </div>
