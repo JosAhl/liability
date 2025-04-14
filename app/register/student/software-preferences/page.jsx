@@ -128,7 +128,7 @@ export default function StudentSoftwarePreferencesPage() {
     localStorage.setItem("studentFormData", JSON.stringify(updatedData));
 
     // Navigate to next step
-    router.push("/register/student/success");
+    router.push("/register/success");
   };
 
   return (

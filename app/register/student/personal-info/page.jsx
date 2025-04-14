@@ -13,10 +13,11 @@ export default function StudentPersonalInfoPage() {
     email: "",
     telephone_number: "",
     password: "",
-    field: [],
+    //field: [],
+    studyProgram: "",
   });
 
-  const field = ["Digital Design", "Webbutveckling"];
+  const studyProgram = ["Digital Design", "Webbutveckling"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,9 +42,12 @@ export default function StudentPersonalInfoPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Save data to localStorage or session storage
-    localStorage.setItem("studentFormData", JSON.stringify(formData));
+    // Merge with previous data and save
+    const previousData = JSON.parse(
+      localStorage.getItem("studentFormData") || "{}"
+    );
+    const updatedData = { ...previousData, ...formData };
+    localStorage.setItem("studentFormData", JSON.stringify(updatedData));
 
     // Navigate to next step
     router.push("/register/student/software-preferences");
@@ -117,9 +121,9 @@ export default function StudentPersonalInfoPage() {
 
           <div className="form-group">
             <CheckboxButtons
-              options={field}
-              name="field"
-              selectedValues={formData.field || []}
+              options={studyProgram}
+              name="studyProgram"
+              selectedValues={formData.studyProgram || []}
               onChange={handleCheckboxChange}
               className="mt-2"
             />

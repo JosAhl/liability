@@ -11,13 +11,17 @@ export async function registerStudent(formData) {
   const password = formData.get("password");
   const first_name = formData.get("first_name");
   const last_name = formData.get("last_name");
-  const telephone = formData.get("telephone");
+  const avatar_url = formData.get("avatar_url");
+  const telephone = formData.get("telephone_number");
   const studyProgram = formData.get("studyProgram");
   const description = formData.get("description");
   const github = formData.get("portfolio-github");
   const linkedin = formData.get("linkedin");
-  const selectedPrograms = formData.getAll("selectedPrograms");
-  const selectedSkills = formData.getAll("selectedSkills");
+  const cv_url = formData.get("cv_url");
+  const other_url = formData.get("other_url");
+  const selectedPrograms = formData.getAll("selectedPrograms"); /* software */
+  const selectedSkills = formData.getAll("selectedSkills"); /* skills */
+  const field = formData.get("userType");
 
   try {
     // Step 1: Sign up the user
@@ -28,6 +32,7 @@ export async function registerStudent(formData) {
         data: {
           first_name,
           last_name,
+          avatar_url,
         },
       },
     });
@@ -43,27 +48,61 @@ export async function registerStudent(formData) {
     // Short delay to ensure auth is complete
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Insert student data
-    const { error: studentError } = await supabase.from("students").insert([
-      {
-        telephone_number: telephone,
-        description: description,
-        linkedin: linkedin,
-        profile_id: userId,
-        portfolio_github: github,
-        study_program: studyProgram,
-      },
-    ]);
+    // Step 2: Insert student data
+    if (field.toLowerCase() === "student") {
+      const { error: studentError } = await supabase.from("students").insert([
+        {
+          profile_id: userId,
+          telephone_number: telephone,
+          description,
+          portfolio_github: github,
+          linkedin,
+          cv_url,
+          other_url,
+          study_program: studyProgram,
+        },
+      ]);
 
-    if (studentError) {
-      console.error(
-        "Student insert error:",
-        studentError.message,
-        studentError.details
-      );
-    } else {
-      console.log("Student created successfully");
+      if (studentError) {
+        console.error("Student insert error:", studentError.message);
+        return redirect("/error");
+      }
+
+      console.log("Student data inserted successfully");
     }
+
+    // Step 3: Insert into the `profile_field` table
+    const { data: fieldData, error: fieldError } = await supabase
+      .from("fields")
+      .select("id")
+      .eq("name", field)
+      .single();
+
+    if (fieldError || !fieldData) {
+      console.error(
+        "Field lookup error:",
+        fieldError?.message || "Field not found"
+      );
+      return redirect("/error");
+    }
+
+    const fieldId = fieldData.id;
+
+    const { error: profileFieldError } = await supabase
+      .from("profile_field")
+      .insert([
+        {
+          profile_id: userId,
+          field_id: fieldId,
+        },
+      ]);
+
+    if (profileFieldError) {
+      console.error("Profile field insert error:", profileFieldError.message);
+      return redirect("/error");
+    }
+
+    console.log(`Linked field "${field}" to user ${userId}`);
 
     // Process skills
     for (const skillName of selectedSkills) {
