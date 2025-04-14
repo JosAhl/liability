@@ -13,9 +13,9 @@ details summary::marker {
     display:none;
   }
 
-details:open {
+/* details:open {
     gap: 2rem;
-}
+} */
 
 summary {   
     color: var(--Neutral-White, #FEFEFE);
@@ -49,6 +49,10 @@ details > p {
     border-top: 1px solid var(--white);
     padding-top: 2rem;
 }
+
+details:open > p {
+    margin-top: 2rem;
+  }
 
 @media screen and (max-width: 1279px) and (min-width: 769px) {
     summary {
