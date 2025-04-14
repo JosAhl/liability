@@ -30,7 +30,6 @@ const Navbar = () => {
         </ul>
 
         <div className="navbar-buttons">
-
         {isOpen ? (
             <Link href="/" className="mobile-link-style">Logga in</Link>
           ) : (
@@ -41,7 +40,6 @@ const Navbar = () => {
         ) : (
           <Button text="Anmäl mig" className="primary" variant="default" color="blue" />
         )}
-
         </div>
       </div>
     </nav>

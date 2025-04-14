@@ -1,0 +1,48 @@
+/* Base styles */
+.checkbox-buttons-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    gap: 16px;
+    align-self: stretch;
+    flex-wrap: wrap;
+}
+  
+.checkbox-button {
+    display: flex;
+    min-width: 194.33px;
+    padding: 16px 48px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex: 1 0 0;
+    border-radius: 100px;
+    border: 1px solid var(--Primary-Blue);
+    background: var(--white);
+}
+  
+/* Selected style */
+.checkbox-button--selected {
+    background: var(--Primary-Grey);
+}
+  
+/* Hover state (when not selected) */
+.checkbox-button:not(.checkbox-button--selected):hover {
+    border: 3px solid var(--Primary-Blue);
+    background: var(--white);
+    box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.25);
+}
+  
+/* Focus state */
+.checkbox-button:focus {
+}
+  
+/* Active/pressing state */
+.checkbox-button:active {
+}
+  
+/* Disabled state (if you need it) */
+.checkbox-button:disabled {
+    border: none;
+    background: var(--Primary-Grey);
+}
