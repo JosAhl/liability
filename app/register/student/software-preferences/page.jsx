@@ -84,42 +84,29 @@ export default function StudentSoftwarePreferencesPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (formData.extraSoftware && formData.extraSoftware.trim() !== "") {
-      // Split by commas or newlines and trim whitespace
-      const extraItems = formData.extraSoftware
-        .split(/[,\n]/)
-        .map((item) => item.trim())
-        .filter((item) => item !== "");
+    const extraItems = formData.extraSoftware
+      .split(/[,\n]/)
+      .map((item) => item.trim())
+      .filter((item) => item !== "");
 
-      // Add extra software to selectedPrograms
-      setFormData((prev) => ({
-        ...prev,
-        selectedPrograms: [...prev.selectedPrograms, ...extraItems],
-      }));
+    // Combine programs + extra software here
+    const combinedPrograms = [...formData.selectedPrograms, ...extraItems];
 
-      // Use the updated state in a callback to ensure it's included in localStorage
-      setTimeout(() => {
-        const updatedFormData = {
-          ...formData,
-          selectedPrograms: [...formData.selectedPrograms, ...extraItems],
-        };
+    // Merge with previous data and save
+    const previousData = JSON.parse(
+      localStorage.getItem("studentFormData") || "{}"
+    );
+    const updatedData = {
+      ...previousData,
+      selectedPrograms: combinedPrograms,
+      extraSoftware: formData.extraSoftware,
+    };
 
-        // Merge with previous data and save
-        const previousData = JSON.parse(
-          localStorage.getItem("studentFormData") || "{}"
-        );
-        const updatedData = { ...previousData, ...updatedFormData };
-        localStorage.setItem("studentFormData", JSON.stringify(updatedData));
+    localStorage.setItem("studentFormData", JSON.stringify(updatedData));
+    router.push("/register/success");
+  };
 
-        // Navigate to next step
-        router.push(
-          "/register/success"
-        ); /* ----------------------------------------------------------------- test for database */
-      }, 0);
-
-      return;
-    }
-
+  /*
     // Merge with previous data and save
     const previousData = JSON.parse(
       localStorage.getItem("studentFormData") || "{}"
@@ -131,6 +118,7 @@ export default function StudentSoftwarePreferencesPage() {
     router.push("/register/success");
   };
 
+  */
   return (
     <div className="wrapper">
       <div className="image-container">

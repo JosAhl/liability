@@ -26,23 +26,25 @@ export default function RegistrationSuccessPage() {
       // Create a FormData object to send to the server action
       const submitData = new FormData();
 
-      // Add each field from the collected data to the FormData object
       Object.entries(formData).forEach(([key, value]) => {
         if (Array.isArray(value)) {
-          // Handle arrays (like fields, software, focus_areas)
-          value.forEach((item) => {
-            if (key === "skills") {
-              submitData.append("selectedSkills", item);
-            } else if (key === "software" || key === "programs") {
-              submitData.append("selectedPrograms", item);
-            } else {
+          const shouldStringify =
+            key === "selectedPrograms" ||
+            key === "extraSoftware" ||
+            key === "selectedSkills";
+
+          if (shouldStringify) {
+            submitData.append(key, JSON.stringify(value));
+          } else {
+            // fallback: append each item individually
+            value.forEach((item) => {
               submitData.append(key, item);
-            }
-          });
+            });
+          }
         } else if (value !== null && value !== undefined) {
           const fieldName =
             key === "phone"
-              ? "telephone"
+              ? "telephone_number"
               : key === "github"
               ? "portfolio-github"
               : key === "program"
@@ -52,6 +54,46 @@ export default function RegistrationSuccessPage() {
           submitData.append(fieldName, value.toString());
         }
       });
+
+      /*
+      // Add each field from the collected data to the FormData object
+      Object.entries(formData).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          // Handle arrays (like fields, software, focus_areas)
+          value.forEach((item) => {
+            if (key === "skills" || key === "selectedSkills") {
+              submitData.append("selectedSkills", item);
+            } else if (
+              key === "software" ||
+              key === "programs" ||
+              key === "selectedPrograms"
+            ) {
+              submitData.append("selectedPrograms", item);
+            } else {
+              submitData.append(key, item);
+            }
+          });
+        } else if (value !== null && value !== undefined) {
+          const fieldName =
+            key === "phone"
+              ? /*"telephone" "telephone_number"
+              : key === "github"
+              ? "portfolio-github"
+              : key === "program"
+              ? "studyProgram"
+              : key;
+
+          submitData.append(fieldName, value.toString());
+        }
+      });
+      */
+
+      // Make sure userType is set
+      if (!submitData.get("userType")) {
+        submitData.append("userType", "student");
+      }
+
+      console.log("Submitting data:", Object.fromEntries(submitData));
 
       // Call the server action to register the student
       await registerStudent(submitData);

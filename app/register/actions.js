@@ -9,19 +9,29 @@ export async function registerStudent(formData) {
   // Extract values from the FormData object
   const email = formData.get("email");
   const password = formData.get("password");
+  const field =
+    formData.get("userType"); /* Table fields: "student" or "företag" */
+
+  // For table "profiles"
   const first_name = formData.get("first_name");
   const last_name = formData.get("last_name");
   const avatar_url = formData.get("avatar_url");
+
+  // For table "students"
   const telephone = formData.get("telephone_number");
-  const studyProgram = formData.get("studyProgram");
   const description = formData.get("description");
-  const github = formData.get("portfolio-github");
+  const github = formData.get("portfolio_github");
   const linkedin = formData.get("linkedin");
   const cv_url = formData.get("cv_url");
   const other_url = formData.get("other_url");
-  const selectedPrograms = formData.getAll("selectedPrograms"); /* software */
-  const selectedSkills = formData.getAll("selectedSkills"); /* skills */
-  const field = formData.get("userType");
+  const studyProgram = formData.get("studyProgram");
+
+  // For table "profile_software" and "profile_extra_software"
+  //const selectedPrograms = formData.getAll("selectedPrograms");
+  const selectedPrograms = JSON.parse(formData.get("selectedPrograms"));
+
+  // For table "profile_skill" and "profile_extra_skill"
+  const selectedSkills = formData.getAll("selectedSkills");
 
   try {
     // Step 1: Sign up the user
@@ -71,7 +81,7 @@ export async function registerStudent(formData) {
       console.log("Student data inserted successfully");
     }
 
-    // Step 3: Insert into the `profile_field` table
+    // Step 3: Insert into the "profile_field" table
     const { data: fieldData, error: fieldError } = await supabase
       .from("fields")
       .select("id")
@@ -163,64 +173,142 @@ export async function registerStudent(formData) {
       }
     }
 
-    // Process software/programs
-    for (const softwareName of selectedPrograms) {
-      let softwareId = null;
+    // Step 4: Process selected programs (software)
+    if (selectedPrograms && selectedPrograms.length > 0) {
+      console.log("Processing selected programs:", selectedPrograms);
 
-      const { data: softwareData, error: softwareLookupError } = await supabase
+      // Fetch all software from the "software" table
+      const { data: allSoftware, error: softwareError } = await supabase
         .from("software")
-        .select("id")
-        .eq("name", softwareName)
-        .single();
+        .select("id, name");
 
-      if (!softwareLookupError && softwareData) {
-        // Found existing software
-        softwareId = softwareData.id;
+      if (softwareError) {
+        console.error(
+          "Error fetching software from database:",
+          softwareError.message
+        );
+        throw softwareError;
+      }
 
+      // Create a map of software names to IDs
+      const softwareMap = new Map();
+      allSoftware.forEach((software) => {
+        softwareMap.set(software.name.toLowerCase(), software.id);
+      });
+
+      // Separate selected programs into known software and extra software
+      const matchedSoftwareIds = [];
+      const extraSoftwareNames = [];
+
+      selectedPrograms.forEach((program) => {
+        const normalizedProgram = program.toLowerCase();
+        if (softwareMap.has(normalizedProgram)) {
+          matchedSoftwareIds.push(softwareMap.get(normalizedProgram));
+        } else {
+          extraSoftwareNames.push(program);
+        }
+      });
+
+      // Insert matched software into "profile_software"
+      if (matchedSoftwareIds.length > 0) {
         const { error: profileSoftwareError } = await supabase
           .from("profile_software")
-          .insert([{ profile_id: userId, software_id: softwareId }]);
+          .insert(
+            matchedSoftwareIds.map((softwareId) => ({
+              profile_id: userId,
+              software_id: softwareId,
+            }))
+          );
 
         if (profileSoftwareError) {
           console.error(
-            "Failed to link software to profile:",
+            "Error inserting into profile_software:",
             profileSoftwareError.message
           );
-        } else {
-          console.log(`Linked software "${softwareName}" to user ${userId}`);
+          throw profileSoftwareError;
         }
-      } else {
-        // Software not found, insert into extra_software
-        const { data: extraSoftwareData, error: extraSoftwareError } =
+
+        console.log(
+          "Inserted matched software into profile_software:",
+          matchedSoftwareIds
+        );
+      }
+
+      // Handle extra software
+      if (extraSoftwareNames.length > 0) {
+        console.log("Processing extra software:", extraSoftwareNames);
+
+        // Check if extra software already exists in the "extra_software" table
+        const { data: existingExtras, error: existingExtrasError } =
           await supabase
             .from("extra_software")
-            .insert([{ name: softwareName }])
-            .select("id")
-            .single();
+            .select("id, name")
+            .in("name", extraSoftwareNames);
 
-        if (extraSoftwareError) {
+        if (existingExtrasError) {
           console.error(
-            "Failed to insert extra software:",
-            extraSoftwareError.message
+            "Error fetching existing extra software:",
+            existingExtrasError.message
           );
-          continue;
+          throw existingExtrasError;
         }
 
-        const extraSoftwareId = extraSoftwareData.id;
+        // Create a map of existing extra software names to IDs
+        const existingExtrasMap = new Map();
+        existingExtras.forEach((extra) => {
+          existingExtrasMap.set(extra.name.toLowerCase(), extra.id);
+        });
+
+        // Find new extra software to insert
+        const newExtraSoftware = extraSoftwareNames.filter(
+          (name) => !existingExtrasMap.has(name.toLowerCase())
+        );
+
+        // Insert new extra software into the "extra_software" table
+        let insertedExtras = [];
+        if (newExtraSoftware.length > 0) {
+          const { data: newExtras, error: newExtrasError } = await supabase
+            .from("extra_software")
+            .insert(newExtraSoftware.map((name) => ({ name })))
+            .select("id, name");
+
+          if (newExtrasError) {
+            console.error(
+              "Error inserting new extra software:",
+              newExtrasError.message
+            );
+            throw newExtrasError;
+          }
+
+          insertedExtras = newExtras;
+          console.log("Inserted new extra software:", newExtras);
+        }
+
+        // Combine existing and newly inserted extra software
+        const allExtras = [...existingExtras, ...insertedExtras];
+
+        // Insert into "profile_extra_software"
         const { error: profileExtraSoftwareError } = await supabase
           .from("profile_extra_software")
-          .insert([{ profile_id: userId, extra_software_id: extraSoftwareId }]);
+          .insert(
+            allExtras.map((extra) => ({
+              profile_id: userId,
+              extra_software_id: extra.id,
+            }))
+          );
 
         if (profileExtraSoftwareError) {
           console.error(
-            "Failed to link extra software to profile:",
+            "Error inserting into profile_extra_software:",
             profileExtraSoftwareError.message
           );
-        } else {
-          console.log(
-            `Linked EXTRA software "${softwareName}" to user ${userId}`
-          );
+          throw profileExtraSoftwareError;
         }
+
+        console.log(
+          "Inserted extra software into profile_extra_software:",
+          allExtras
+        );
       }
     }
 
