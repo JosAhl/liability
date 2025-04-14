@@ -25,6 +25,8 @@ summary {
     font-weight: 300;
     line-height: var(--11, 3.25rem); /* 108.333% */
     list-style: none;
+    appearance: none; /* Hides default arrow in Safari (macOS + iOS) */
+    -webkit-appearance: none; /* Needed for Safari */
     display: flex;
     width: 100%;
     align-items: center;
@@ -32,6 +34,10 @@ summary {
     gap: 2rem;
     align-self: stretch;
     }
+      
+      summary::-webkit-details-marker {
+        display: none;
+      }
 
 details > p {
     color: var(--Neutral-White, #FEFEFE);
