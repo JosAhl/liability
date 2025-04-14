@@ -8,6 +8,7 @@ nav {
     box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.15);
     position: relative;
     padding: 2rem 7.5rem;
+    z-index: 1000; /* Add this line */
 
   }
   
@@ -59,7 +60,7 @@ nav {
   @media screen and (max-width: 1279px) {
     nav {
       padding: 1rem 2rem;
-      width: 100%;
+      max-width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -84,11 +85,16 @@ nav {
         width: fit-content;
         background-color: var(--white); 
         display: flex;
+        z-index: 1001; /* Add this line */
       }
   
       .navbar-collapse.open {
         max-height: fit-content; 
         padding: 1rem 2rem;
+        z-index: 1002;
+        background-color: #FEFEFE; /* Add this line to ensure background is visible */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15); /* Optional: adds a shadow for better visibility */
+        text-decoration: none;
 
       }
   
@@ -96,8 +102,8 @@ nav {
       flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
-/*       padding: 1rem 0;
- */      border-bottom: 1px solid var(--Neutral-0, #121212);
+      padding: 1rem 0;
+     border-bottom: 1px solid var(--Neutral-0, #121212);
     }
 
     .navbar-menu > * {
@@ -112,7 +118,6 @@ nav {
         all: unset;
         display: flex;
         align-items: flex-start;   
-        
         font: inherit;
         color: var(--your-link-color, #000);
         text-decoration: none;
