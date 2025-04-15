@@ -26,7 +26,7 @@ export default function StudentPersonalInfoPage() {
     localStorage.setItem("companyFormData", JSON.stringify(updatedData));
 
     // Navigate to next step
-    router.push("/register/success");
+    router.push("/register/company/links");
   };
 
   return (
@@ -74,7 +74,6 @@ export default function StudentPersonalInfoPage() {
               color="red"
               withArrow={true}
               type="submit"
-              //href="/register/success"
             />
           </div>
         </form>
