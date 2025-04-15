@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import "@/styles/components/navbar.css";
 import Button from "@/components/Button";
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +10,11 @@ const Navbar = () => {
   return (
     <nav className="Navbar">
       <a href="/">
-        <img src="liability-logo.png" alt="Liability logo" className="liability"/>
+        <img
+          src="liability-logo.png"
+          alt="Liability logo"
+          className="liability"
+        />
       </a>
 
       <button
@@ -20,30 +24,51 @@ const Navbar = () => {
         aria-expanded={isOpen}
       >
         ☰
-        </button>
+      </button>
 
       <div className={`navbar-collapse ${isOpen ? "open" : ""}`}>
         <ul className="navbar-menu">
-          <li><a href="#about-event">Om eventet</a></li>
-          <li><a href="#agenda">Agenda</a></li>
-          <li><a href="#faq-section">FAQ</a></li>
+          <li>
+            <a href="#about-event">Om eventet</a>
+          </li>
+          <li>
+            <a href="#agenda">Agenda</a>
+          </li>
+          <li>
+            <a href="#faq-section">FAQ</a>
+          </li>
         </ul>
 
         <div className="navbar-buttons">
-        {isOpen ? (
-            <Link href="/" className="mobile-link-style">Logga in</Link>
+          {isOpen ? (
+            <Link href="/" className="mobile-link-style">
+              Logga in
+            </Link>
           ) : (
-            <Button text="Logga in" className="secondary" variant="default" />
-          )}        
-        {isOpen ? (
-          <Link href="/" className="mobile-link-style">Anmäl mig</Link>
-        ) : (
-          <Button text="Anmäl mig" className="primary" variant="default" color="blue" />
-        )}
+            <Button
+              text="Logga in"
+              className="secondary"
+              variant="default"
+              onClick={() => (window.location.href = "/login")}
+            />
+          )}
+          {isOpen ? (
+            <Link href="/register" className="mobile-link-style">
+              Anmäl mig
+            </Link>
+          ) : (
+            <Button
+              text="Anmäl mig"
+              className="primary"
+              variant="default"
+              color="blue"
+              onClick={() => (window.location.href = "/register")}
+            />
+          )}
         </div>
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;
