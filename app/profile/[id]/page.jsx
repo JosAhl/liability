@@ -1,4 +1,4 @@
-'use client';
+/* 'use client';
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -13,7 +13,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [user, setUser] = useState(null);
 
-/*   useEffect(() => {
+  useEffect(() => {
     async function load() {
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', id).single();
       setProfile(profile);
@@ -25,7 +25,7 @@ export default function ProfilePage() {
     }
 
     load();
-  }, [id]); */
+  }, [id]);
 
   //Mock data for testing
 
@@ -58,3 +58,16 @@ export default function ProfilePage() {
 
   return isOwner ? <ProfileEditForm profile={profile} /> : <ProfileView profile={profile} />;
 }
+ */
+
+import ProfileView from "@/components/profile/ProfileView";
+
+const ProfilePage = () => {
+    return (
+        <section className="profile-page">
+            <ProfileView />
+        </section>
+    );
+}
+export default ProfilePage;
+//

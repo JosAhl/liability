@@ -45,6 +45,7 @@ export async function updateSession(request) {
     !request.nextUrl.pathname.startsWith("/auth") &&
     request.nextUrl.pathname !== "/dashboard" && //TODO - ta bort denna sedan! 
     request.nextUrl.pathname !== "/profile/1" && //TODO - ta bort denna sedan! 
+    request.nextUrl.pathname !== "/profile" && //TODO - ta bort denna sedan! 
     request.nextUrl.pathname !== "/" // Add this line to exempt the root route
   ) {
     // no user, potentially respond by redirecting the user to the login page

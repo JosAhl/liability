@@ -1,0 +1,215 @@
+.profile-view {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+    align-self: stretch;
+}
+
+.profile-view-actions {
+    display: flex;
+gap: 1rem;
+justify-content: flex-end;
+align-items: center;
+}
+
+.btn {
+    all: unset;
+    cursor: pointer;  
+}
+
+.action-p {
+    display: none;
+}
+
+.profile-view-header {
+    display: grid;
+    grid-template-columns: auto 6.25rem;
+    width: 100%;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #001A52;
+
+}
+
+.profile-view-header-text {
+    grid-column: 1/2;
+}
+
+.profile-view-header-h1 {
+    color: var(--Neutral-0, #121212);
+    font-size: 1.5rem;
+    line-height: var(--8, 2rem);
+    font-style: normal;
+    font-weight: 400;
+}
+
+.profile-view-header-h2 {
+    color: var(--Neutral-0, #121212);
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: var(--5-2, 1.375rem); /* 137.5% */
+    letter-spacing: 0.00938rem;
+}
+
+.profile-view-header-img {
+    width: 6.25rem;
+    height: 6.25rem;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    grid-column: 2/3;
+    grid-row: 1/2
+
+}
+
+.profile-view-merits, .profile-view-competences, .profile-view-software, .profile-view-about, .profile-view-contact {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #001A52;
+    width: 100%;
+}
+
+.profile-view-merits{
+    border-bottom: none;
+}
+
+.profile-merits-h3, .profile-competence-h3, .profile-software-h3, .profile-about-h3, .profile-contact-h3 {
+    color: var(--Neutral-0, #121212);
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: var(--8, 2rem); /* 133.333% */
+}
+
+.compentence-container, .software-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    width: 100%;
+}
+
+.competence, .software {
+    display: flex;
+    min-width: 4.5rem;
+    padding: 0.625rem 0.75rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    border-radius: 2.71338rem;
+    border: 0.434px solid var(--Neutral-40, #6C6C6C);
+    background: var(--Neutral-White, #FEFEFE);
+    color: var(--Primary-Blue, #001A52);
+    font-size: var(--3, 0.75rem);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1rem; /* 133.333% */
+    letter-spacing: 0.00625rem;
+    }
+
+.profile-about-p{
+    color: var(--Neutral-0, #121212);
+    font-size: var(--3, 0.75rem);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1rem; /* 133.333% */
+    letter-spacing: 0.00625rem;
+} 
+
+.profile-contact-data, .merit-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.21rem;
+
+}
+
+.profile-contact-data > a {
+    display: flex;
+    gap: 1rem; 
+    color: var(--Neutral-0, #121212);
+    font-size: var(--3, 0.75rem);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1rem; /* 133.333% */
+    letter-spacing: 0.00625rem;
+}
+
+@media screen and (min-width: 769px) {
+
+    .profile-view {
+        gap: 2rem;
+       
+    }
+
+    .profile-view-actions {
+        gap: 2rem;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 3.5rem;
+        gap: 0.5rem;
+    }
+
+    .btn > img {
+        height: 1.5rem;
+        object-fit: contain;
+    }
+
+    .action-p {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-view-header-img {
+        width: 12.5rem;
+        height: 12.5rem;
+    
+    }
+
+    .profile-view-header {
+        grid-template-columns: auto 12.5rem;
+    }
+
+    .profile-view-header-h1 {
+        font-size: var(--10, 3rem);
+        line-height: var(--11, 3.25rem); /* 108.333% */
+    }
+
+    .profile-view-header-h2 {
+        font-size: var(--8, 2rem);
+        font-style: normal;
+        font-weight: 400;
+        line-height: 3rem;
+    }
+
+    .profile-merits-h3, .profile-competence-h3, .profile-software-h3, .profile-about-h3, .profile-contact-h3 { 
+        font-size: 1.5rem;
+        line-height: var(--8, 2rem); /* 133.333% */
+    }
+
+    .competence, .software {
+        min-width: 5.27288rem;
+        padding: 0.75rem;
+    }
+
+    .profile-view-merits, .profile-view-competences, .profile-view-software, .profile-view-about, .profile-view-contact {
+        padding-bottom: 2rem;
+
+    }
+
+    .profile-about-p{
+        color: var(--Neutral-0, #121212);
+        font-size: 1rem;
+        line-height: var(--5-2, 1.375rem); /* 137.5% */
+        letter-spacing: 0.00938rem;
+    } 
+
+}
