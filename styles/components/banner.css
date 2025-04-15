@@ -16,7 +16,7 @@
 
 /* Ensure images scale dynamically */
 .banner-track img {
-    width: clamp(15rem, 10vw, 22rem);
+    width: clamp(9rem, 10vw, 22rem);
     height: auto;
     object-fit: contain;
 }

@@ -36,7 +36,6 @@
 .hero-content > h1 {
     color: var(--white);
     font-feature-settings: 'liga' off, 'clig' off;
-    font-family: font/weight/Thin;
     font-size: var(--12, 3.75rem);
     font-style: normal;
     font-weight: 300;
@@ -46,9 +45,63 @@
 .hero-content > p {
     color: var(--Neutral-White, #FEFEFE);
     font-feature-settings: 'liga' off, 'clig' off;
-    font-family: font/weight/Thin;
     font-size: var(--8, 2rem);
     font-style: normal;
     font-weight: 400;
     line-height: 3rem; /* 150% */
 }
+
+@media screen and (max-width: 1279px) {
+    .hero {
+/*      height: 59.75rem;
+*/      padding: 15rem 3rem 3rem 3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+       
+    }
+
+    .hero-content > h1 {
+        font-weight: 700;
+    }
+
+    .event-details-container{
+        display: flex;
+        padding: 0rem 0rem 0rem 0rem;
+     }
+
+     .event-details {
+        position: unset;
+        width: 100%;
+        top: 0rem;
+     }
+}
+
+
+@media screen and (max-width: 768px) {
+
+    .hero {
+    padding: 0rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: space-between;
+    height: fit-content;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    }
+
+    .hero-content {
+        padding: 6rem 1.5rem 0rem 1.5rem;
+    }
+
+    .hero-content > h1 {
+        font-size: 2.5rem;
+        line-height: 3rem; /* 120% */
+    }
+
+    .event-details-container{
+        width: 100%;
+     }
+}
+

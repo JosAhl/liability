@@ -34,3 +34,58 @@
     box-sizing: border-box;
     width: 80rem;
 }
+
+@media screen and (max-width: 1279px) and (min-width: 769px) {
+    .faq-section {
+        padding: 10rem 3rem;
+        align-items: flex-start;
+        flex-shrink: 0;
+    }
+
+    .faq {
+        width: 30%;
+        aspect-ratio: 1;
+        left: 3rem;
+        flex-shrink: 0;
+    }
+
+    .faq-logo {
+        width: 30%;
+        aspect-ratio: 1;
+        flex-shrink: 0;
+        right: 0rem;
+        bottom: 3rem;
+    }
+
+    .faq-items {
+        width: 100%;
+
+    }
+}
+
+@media screen and (max-width: 768px) {
+
+    .faq {
+        width: 50%;
+        aspect-ratio: 1;
+        left: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .faq-logo {
+        width: 50%;
+        aspect-ratio: 1;
+        right: -2rem;
+        bottom: 1.5rem;
+    }
+    
+
+    .faq-section {
+        padding: 7rem 1.5rem;
+    }
+    .faq-items {
+        width: 100%;
+        gap: 1.5rem
+
+    }
+}

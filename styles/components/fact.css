@@ -2,7 +2,6 @@ details {
     display: flex;
     padding: 2rem 4rem;
     flex-direction: column;
-    gap: 2rem;
     align-self: stretch;
     width: 100%;
     border-radius: 1rem;
@@ -14,15 +13,20 @@ details summary::marker {
     display:none;
   }
 
+/* details:open {
+    gap: 2rem;
+} */
+
 summary {   
     color: var(--Neutral-White, #FEFEFE);
     font-feature-settings: 'liga' off, 'clig' off;
-    font-family: font/weight/Thin;
     font-size: var(--10, 3rem);
     font-style: normal;
     font-weight: 300;
     line-height: var(--11, 3.25rem); /* 108.333% */
     list-style: none;
+    appearance: none; /* Hides default arrow in Safari (macOS + iOS) */
+    -webkit-appearance: none; /* Needed for Safari */
     display: flex;
     width: 100%;
     align-items: center;
@@ -30,20 +34,55 @@ summary {
     gap: 2rem;
     align-self: stretch;
     }
-
-/* details[open] {
-  width: auto;
- /*  align-self: stretch; 
-} */
+      
+      summary::-webkit-details-marker {
+        display: none;
+      }
 
 details > p {
     color: var(--Neutral-White, #FEFEFE);
     font-feature-settings: 'liga' off, 'clig' off;
-    font-family: font/weight/Thin;
     font-size: var(--6, 1.5rem);
     font-style: normal;
     font-weight: 400;
     line-height: 2.5rem; /* 166.667% */
     border-top: 1px solid var(--white);
     padding-top: 2rem;
+}
+
+details:open > p {
+    margin-top: 2rem;
+  }
+
+@media screen and (max-width: 1279px) and (min-width: 769px) {
+    summary {
+        font-size: var(--8, 2rem);
+    }
+
+    details {
+        padding: 2rem 4rem 3rem 4rem;
+    }
+
+    details > p {
+        font-size: 1.125rem;
+        line-height: var(--6, 1.5rem); /* 133.333% */
+        letter-spacing: 0.03125rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    summary {
+        font-size: 1.5rem;
+        line-height: var(--8, 2rem); /* 133.333% */
+    }
+
+    details {
+        padding: 2rem 1.5rem;
+    }
+
+    details > p {
+        font-size: 1rem;
+        line-height: var(--6, 1.5rem); /* 150% */
+        letter-spacing: 0.03125rem;
+    }
 }
