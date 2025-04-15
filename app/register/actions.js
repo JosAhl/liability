@@ -20,7 +20,7 @@ export async function registerStudent(formData) {
   // For table "students"
   const telephone = formData.get("telephone_number");
   const description = formData.get("description");
-  const github = formData.get("portfolio_github");
+  const portfolio_github = formData.get("portfolio_github");
   const linkedin = formData.get("linkedin");
   const cv_url = formData.get("cv_url");
   const other_url = formData.get("other_url");
@@ -30,7 +30,6 @@ export async function registerStudent(formData) {
   const selectedPrograms = JSON.parse(formData.get("selectedPrograms"));
 
   // For table "profile_skill" and "profile_extra_skill"
-  //const selectedSkills = formData.getAll("selectedSkills");
   const selectedSkills = JSON.parse(formData.get("selectedSkills"));
 
   try {
@@ -65,7 +64,7 @@ export async function registerStudent(formData) {
           profile_id: userId,
           telephone_number: telephone,
           description,
-          portfolio_github: github,
+          portfolio_github: portfolio_github,
           linkedin,
           cv_url,
           other_url,

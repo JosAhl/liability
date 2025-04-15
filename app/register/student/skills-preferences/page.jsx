@@ -118,7 +118,7 @@ export default function StudentSkillsPreferencesPage() {
     };
 
     localStorage.setItem("studentFormData", JSON.stringify(updatedData));
-    router.push("/register/success");
+    router.push("/register/student/links");
   };
 
   return (

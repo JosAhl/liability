@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
-import CheckboxButtons from "@/components/CheckboxButtons";
 import FormInput from "@/components/FormInput";
 
 export default function StudentSoftwarePreferencesPage() {
@@ -10,8 +9,8 @@ export default function StudentSoftwarePreferencesPage() {
   const [formData, setFormData] = useState({
     portfolio_github: "",
     linkedin: "",
-    cv_url: "",
-    other_url: "",
+    //cv_url: "",
+    //other_url: "",
   });
 
   // Load previous form data
@@ -31,7 +30,6 @@ export default function StudentSoftwarePreferencesPage() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -39,7 +37,13 @@ export default function StudentSoftwarePreferencesPage() {
     const previousData = JSON.parse(
       localStorage.getItem("studentFormData") || "{}"
     );
-    const updatedData = { ...previousData, ...formData };
+    const updatedData = {
+      ...previousData,
+      portfolio_github: formData.portfolio_github,
+      linkedin: formData.linkedin,
+      //cv_url: formData.cv_url,
+      //other_url: formData.other_url,
+    };
     localStorage.setItem("studentFormData", JSON.stringify(updatedData));
 
     // Navigate to next step
@@ -79,30 +83,6 @@ export default function StudentSoftwarePreferencesPage() {
             />
           </div>
 
-          <div className="form-group">
-            <FormInput
-              type="file"
-              label="CV (Frivilligt)"
-              name="cv_url"
-              id="cv_url"
-              placeholder="Ladda upp fil"
-              withImage={true}
-              value={formData.cv_url}
-              onChange={handleChange}
-            />
-
-            <FormInput
-              type="file"
-              label="Övrigt (Frivilligt)"
-              name="other_url"
-              id="other_url"
-              placeholder="Ladda upp fil"
-              withImage={true}
-              value={formData.other_url}
-              onChange={handleChange}
-            />
-          </div>
-
           <div className="form-navigation">
             <Button
               text="<-"
@@ -118,7 +98,6 @@ export default function StudentSoftwarePreferencesPage() {
               color="red"
               withArrow={true}
               type="submit"
-              href="/register/success"
             />
           </div>
         </form>
