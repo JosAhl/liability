@@ -58,13 +58,18 @@ export default function RegisterPage() {
         fieldId: fieldOption.id,
         userType: fieldOption.name,
       };
-      localStorage.setItem("studentFormData", JSON.stringify(formData));
+
+      if (fieldOption.name.toLowerCase() === "student") {
+        localStorage.setItem("studentFormData", JSON.stringify(formData));
+      } else {
+        localStorage.setItem("companyFormData", JSON.stringify(formData));
+      }
 
       // Redirect based on field type
       if (fieldOption.name.toLowerCase() === "student") {
         router.push("/register/student/personal-info");
       } else {
-        router.push("/register/company/company-info");
+        router.push("/register/company/info");
       }
     } catch (error) {
       console.error("Error saving field selection:", error);

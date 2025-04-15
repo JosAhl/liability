@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "/utils/supabase/server";
 
-export async function registerStudent(formData) {
+export async function registerUser(formData) {
   const supabase = await createClient();
 
   // Extract values from the FormData object
@@ -32,6 +32,15 @@ export async function registerStudent(formData) {
   // For table "profile_skill" and "profile_extra_skill"
   const selectedSkills = JSON.parse(formData.get("selectedSkills"));
 
+  // For table "companies"
+  const company_name = formData.get("company_name");
+  const company_description = formData.get("company_description");
+  const company_url = formData.get("company_url");
+  const company_other_links = formData.get("company_other_links");
+
+  // For table "profile_focus_areas" and "profile_extra_focus_areas"
+  const selectedFocusAreas = JSON.parse(formData.get("selectedFocusAreas"));
+
   try {
     // Step 1: Sign up the user
     const { data, error } = await supabase.auth.signUp({
@@ -56,6 +65,149 @@ export async function registerStudent(formData) {
 
     // Short delay to ensure auth is complete
     await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // --------------------- COMPANY --------------------
+
+    // Step 2: Insert company data
+    if (field.toLowerCase() === "företag") {
+      const { error: companyError } = await supabase.from("companies").insert([
+        {
+          profile_id: userId,
+          name: company_name,
+          url: company_url,
+          other_links: company_other_links,
+          description: company_description,
+        },
+      ]);
+
+      if (companyError) {
+        console.error("Company insert error:", companyError.message);
+        return redirect("/error");
+      }
+
+      console.log("Company data inserted successfully");
+    }
+
+    // Step 3: Insert into the "profile_focus_areas" table
+    if (selectedFocusAreas && selectedFocusAreas.length > 0) {
+      console.log("Processing selected focus areas:", selectedFocusAreas);
+      // Fetch all focus areas from the "focus_areas" table
+      const { data: allFocusAreas, error: focusAreasError } = await supabase
+        .from("focus_areas")
+        .select("id, name");
+      if (focusAreasError) {
+        console.error(
+          "Error fetching focus areas from database:",
+          focusAreasError.message
+        );
+        throw focusAreasError;
+      }
+      // Create a map of focus area names to IDs
+      const focusAreasMap = new Map();
+      allFocusAreas.forEach((focusArea) => {
+        focusAreasMap.set(focusArea.name.toLowerCase(), focusArea.id);
+      });
+      // Separate existing and extra focus areas
+      const matchedFocusAreaIds = [];
+      const extraFocusAreaNames = [];
+      selectedFocusAreas.forEach((focusArea) => {
+        const normalizedFocusArea = focusArea.toLowerCase();
+        if (focusAreasMap.has(normalizedFocusArea)) {
+          matchedFocusAreaIds.push(focusAreasMap.get(normalizedFocusArea));
+        } else {
+          extraFocusAreaNames.push(focusArea);
+        }
+      });
+      // Insert matched focus areas into "profile_focus_areas"
+      if (matchedFocusAreaIds.length > 0) {
+        const { error: profileFocusAreasError } = await supabase
+          .from("profile_focus_areas")
+          .insert(
+            matchedFocusAreaIds.map((focusAreaId) => ({
+              profile_id: userId,
+              focus_area_id: focusAreaId,
+            }))
+          );
+        if (profileFocusAreasError) {
+          console.error(
+            "Error inserting into profile_focus_areas:",
+            profileFocusAreasError.message
+          );
+          throw profileFocusAreasError;
+        }
+        console.log(
+          "Inserted matched focus areas into profile_focus_areas:",
+          matchedFocusAreaIds
+        );
+      }
+      // Handle extra focus areas
+      if (extraFocusAreaNames.length > 0) {
+        console.log("Processing extra focus areas:", extraFocusAreaNames);
+        // Check if extra focus areas already exist in the "extra_focus_areas" table
+        const { data: existingExtras, error: existingExtrasError } =
+          await supabase
+            .from("extra_focus_areas")
+            .select("id, name")
+            .in("name", extraFocusAreaNames);
+        if (existingExtrasError) {
+          console.error(
+            "Error fetching existing extra focus areas:",
+            existingExtrasError.message
+          );
+          throw existingExtrasError;
+        }
+        // Create a map of existing extra focus area names to IDs
+        const existingExtrasMap = new Map();
+        existingExtras.forEach((extra) => {
+          existingExtrasMap.set(extra.name.toLowerCase(), extra.id);
+        });
+        // Find new extra focus areas to insert
+        const newExtraFocusAreas = extraFocusAreaNames.filter(
+          (name) => !existingExtrasMap.has(name.toLowerCase())
+        );
+        // Insert new extra focus areas into the "extra_focus_areas" table
+        let insertedExtras = [];
+        if (newExtraFocusAreas.length > 0) {
+          const { data: newExtras, error: newExtrasError } = await supabase
+            .from("extra_focus_areas")
+            .insert(newExtraFocusAreas.map((name) => ({ name })))
+            .select("id, name");
+          if (newExtrasError) {
+            console.error(
+              "Error inserting new extra focus areas:",
+              newExtrasError.message
+            );
+            throw newExtrasError;
+          }
+          insertedExtras = newExtras;
+          console.log("Inserted new extra focus areas:", newExtras);
+        }
+        // Combine existing and newly inserted extra focus areas
+        const allExtras = [...existingExtras, ...insertedExtras];
+        // Insert into "profile_extra_focus_areas"
+        const { error: profileExtraFocusAreasError } = await supabase
+          .from("profile_extra_focus_areas")
+          .insert(
+            allExtras.map((extra) => ({
+              profile_id: userId,
+              extra_focus_area_id: extra.id,
+            }))
+          );
+        if (profileExtraFocusAreasError) {
+          console.error(
+            "Error inserting into profile_extra_focus_areas:",
+            profileExtraFocusAreasError.message
+          );
+          throw profileExtraFocusAreasError;
+        }
+        console.log(
+          "Inserted extra focus areas into profile_extra_focus_areas:",
+          allExtras
+        );
+      }
+    }
+
+    // -------------------- STUDENT --------------------
 
     // Step 2: Insert student data
     if (field.toLowerCase() === "student") {

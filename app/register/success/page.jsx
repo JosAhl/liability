@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { registerStudent } from "@/app/register/actions.js";
+import { registerUser } from "@/app/register/actions.js";
 import Button from "@/components/Button";
 import "@/styles/components/form.css";
 
@@ -10,11 +10,24 @@ export default function RegistrationSuccessPage() {
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  /*
   useEffect(() => {
     const savedData = localStorage.getItem("studentFormData");
 
     if (savedData) {
       setFormData(JSON.parse(savedData));
+    }
+  }, []);
+  */
+
+  useEffect(() => {
+    const studentData = localStorage.getItem("studentFormData");
+    const companyData = localStorage.getItem("companyFormData");
+
+    if (studentData) {
+      setFormData(JSON.parse(studentData));
+    } else if (companyData) {
+      setFormData(JSON.parse(companyData));
     }
   }, []);
 
@@ -40,6 +53,11 @@ export default function RegistrationSuccessPage() {
         program: "studyProgram",
         selectedPrograms: "selectedPrograms",
         skills: "selectedSkills",
+        company_name: "company_name",
+        company_description: "company_description",
+        company_url: "company_url",
+        company_other_links: "company_other_links",
+        selectedFocusAreas: "selectedFocusAreas",
       };
 
       // Process the form data
@@ -47,7 +65,11 @@ export default function RegistrationSuccessPage() {
         const serverKey = dataMapping[key] || key;
 
         if (Array.isArray(value)) {
-          if (key === "selectedPrograms" || key === "skills") {
+          if (
+            key === "selectedPrograms" ||
+            key === "skills" ||
+            key === "selectedFocusAreas"
+          ) {
             submitData.append(serverKey, JSON.stringify(value));
             console.log(`Adding ${serverKey}:`, JSON.stringify(value));
           } else {
@@ -65,10 +87,11 @@ export default function RegistrationSuccessPage() {
         submitData.append("userType", "student");
       }
 
-      await registerStudent(submitData);
+      await registerUser(submitData);
 
       // Clear localStorage after successful submission
       localStorage.removeItem("studentFormData");
+      localStorage.removeItem("companyFormData");
 
       router.push("/login");
     } catch (error) {
