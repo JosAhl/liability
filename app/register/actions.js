@@ -1,146 +1,552 @@
-'use server';
+"use server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "/utils/supabase/server";
 
-// Function to handle student registration
-export async function registerStudent(formData) {
+export async function registerUser(formData) {
   const supabase = await createClient();
 
-  // Extract common auth values
+  // Extract values from the FormData object
   const email = formData.get("email");
   const password = formData.get("password");
+  const field =
+    formData.get("userType"); /* Table fields: "student" or "företag" */
 
-  const fields = formData.getAll("fields"); /* from fields table */
-  
-  // Extract student-specific values
-  const first_name = formData.get("first_name"); /* from profiles table */
-  const last_name = formData.get("last_name"); /* from profiles table */
-  const telephone_number = formData.get("telephone_number"); /* from students table */
-  const software = formData.getAll("software"); // For multiple checkboxes /* from software table */
-  const focus_areas = formData.getAll("focus_areas"); /* from focus_areas table */
-  const skills = formData.get("skills"); /* from skills table */
+  // For table "profiles"
+  const first_name = formData.get("first_name");
+  const last_name = formData.get("last_name");
+  const avatar_url = formData.get("avatar_url");
 
-  console.log("Attempting student registration:", { email, first_name, last_name });
+  // For table "students"
+  const telephone = formData.get("telephone_number");
+  const description = formData.get("description");
+  const portfolio_github = formData.get("portfolio_github");
+  const linkedin = formData.get("linkedin");
+  const cv_url = formData.get("cv_url");
+  const other_url = formData.get("other_url");
+  const studyProgram = formData.get("studyProgram");
+
+  // For table "profile_software" and "profile_extra_software"
+  const selectedPrograms = JSON.parse(formData.get("selectedPrograms"));
+
+  // For table "profile_skill" and "profile_extra_skill"
+  const selectedSkills = JSON.parse(formData.get("selectedSkills"));
+
+  // For table "companies"
+  const company_name = formData.get("company_name");
+  const company_description = formData.get("company_description");
+  const company_url = formData.get("company_url");
+  const company_other_links = formData.get("company_other_links");
+
+  // For table "profile_focus_areas" and "profile_extra_focus_areas"
+  const selectedFocusAreas = JSON.parse(formData.get("selectedFocusAreas"));
 
   try {
-    // Step 1: Sign up the user in Auth
+    // Step 1: Sign up the user
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          first_name: first_name,
-          last_name: last_name
+          first_name,
+          last_name,
+          avatar_url,
         },
       },
     });
 
     if (error) {
-      console.error("Student signup error:", error.message);
-      return redirect("/register/error?message=" + encodeURIComponent(error.message));
+      console.error("Signup error:", error.message);
+      return redirect("/error");
     }
 
     const userId = data.user.id;
-    console.log("Student user created with ID:", userId);
+    console.log("User created with ID:", userId);
 
-    // Small delay to ensure auth is processed
+    // Short delay to ensure auth is complete
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Step 2: Insert student profile data
-    const { error: profileError } = await supabase
-      .from("student_profiles") // Create this table in Supabase
-      .insert([{ 
-        id: userId,
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        telephone_number: telephone_number,
-        software: software,
-        skills: skills,
-        registration_date: new Date().toISOString()
-      }]);
+    // --------------------- COMPANY --------------------
 
-    if (profileError) {
-      console.error("Student profile insert error:", profileError.message, profileError.details);
-      return redirect("/register/error?message=" + encodeURIComponent("Error creating profile"));
-    }
-
-    console.log("Student profile created successfully");
-    revalidatePath("/", "layout");
-    return redirect("/register/success");
-  } catch (err) {
-    console.error("Unexpected error:", err);
-    return redirect("/register/error");
-  }
-}
-/*
-// Function to handle company registration
-export async function registerCompany(formData) {
-  const supabase = await createClient();
-
-  // Extract common auth values
-  const email = formData.get("email");
-  const password = formData.get("password");
-  
-  // Extract company-specific values
-  const companies = formData.get("companies");
-  const contactPerson = formData.get("contactPerson");
-  const phone = formData.get("phone");
-  const industry = formData.get("industry");
-  // Add any other company-specific fields
-
-  console.log("Attempting company registration:", { email, companyName, contactPerson });
-
-  try {
-    // Step 1: Sign up the user in Auth
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          company_name: companyName,
-          contact_person: contactPerson,
-          user_type: "company"
+    // Step 2: Insert company data
+    if (field.toLowerCase() === "företag") {
+      const { error: companyError } = await supabase.from("companies").insert([
+        {
+          profile_id: userId,
+          name: company_name,
+          url: company_url,
+          other_links: company_other_links,
+          description: company_description,
         },
-      },
-    });
+      ]);
 
-    if (error) {
-      console.error("Company signup error:", error.message);
-      return redirect("/register/error?message=" + encodeURIComponent(error.message));
+      if (companyError) {
+        console.error("Company insert error:", companyError.message);
+        return redirect("/error");
+      }
+
+      console.log("Company data inserted successfully");
     }
 
-    const userId = data.user.id;
-    console.log("Company user created with ID:", userId);
-
-    // Small delay to ensure auth is processed
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Step 2: Insert company profile data
-    const { error: profileError } = await supabase
-      .from("company_profiles") // Create this table in Supabase
-      .insert([{ 
-        id: userId,
-        company_name: companyName,
-        contact_person: contactPerson,
-        email: email,
-        phone: phone,
-        industry: industry,
-        registration_date: new Date().toISOString()
-      }]);
-
-    if (profileError) {
-      console.error("Company profile insert error:", profileError.message, profileError.details);
-      return redirect("/register/error?message=" + encodeURIComponent("Error creating profile"));
+    // Step 3: Insert into the "profile_focus_areas" table
+    if (selectedFocusAreas && selectedFocusAreas.length > 0) {
+      console.log("Processing selected focus areas:", selectedFocusAreas);
+      // Fetch all focus areas from the "focus_areas" table
+      const { data: allFocusAreas, error: focusAreasError } = await supabase
+        .from("focus_areas")
+        .select("id, name");
+      if (focusAreasError) {
+        console.error(
+          "Error fetching focus areas from database:",
+          focusAreasError.message
+        );
+        throw focusAreasError;
+      }
+      // Create a map of focus area names to IDs
+      const focusAreasMap = new Map();
+      allFocusAreas.forEach((focusArea) => {
+        focusAreasMap.set(focusArea.name.toLowerCase(), focusArea.id);
+      });
+      // Separate existing and extra focus areas
+      const matchedFocusAreaIds = [];
+      const extraFocusAreaNames = [];
+      selectedFocusAreas.forEach((focusArea) => {
+        const normalizedFocusArea = focusArea.toLowerCase();
+        if (focusAreasMap.has(normalizedFocusArea)) {
+          matchedFocusAreaIds.push(focusAreasMap.get(normalizedFocusArea));
+        } else {
+          extraFocusAreaNames.push(focusArea);
+        }
+      });
+      // Insert matched focus areas into "profile_focus_areas"
+      if (matchedFocusAreaIds.length > 0) {
+        const { error: profileFocusAreasError } = await supabase
+          .from("profile_focus_areas")
+          .insert(
+            matchedFocusAreaIds.map((focusAreaId) => ({
+              profile_id: userId,
+              focus_area_id: focusAreaId,
+            }))
+          );
+        if (profileFocusAreasError) {
+          console.error(
+            "Error inserting into profile_focus_areas:",
+            profileFocusAreasError.message
+          );
+          throw profileFocusAreasError;
+        }
+        console.log(
+          "Inserted matched focus areas into profile_focus_areas:",
+          matchedFocusAreaIds
+        );
+      }
+      // Handle extra focus areas
+      if (extraFocusAreaNames.length > 0) {
+        console.log("Processing extra focus areas:", extraFocusAreaNames);
+        // Check if extra focus areas already exist in the "extra_focus_areas" table
+        const { data: existingExtras, error: existingExtrasError } =
+          await supabase
+            .from("extra_focus_areas")
+            .select("id, name")
+            .in("name", extraFocusAreaNames);
+        if (existingExtrasError) {
+          console.error(
+            "Error fetching existing extra focus areas:",
+            existingExtrasError.message
+          );
+          throw existingExtrasError;
+        }
+        // Create a map of existing extra focus area names to IDs
+        const existingExtrasMap = new Map();
+        existingExtras.forEach((extra) => {
+          existingExtrasMap.set(extra.name.toLowerCase(), extra.id);
+        });
+        // Find new extra focus areas to insert
+        const newExtraFocusAreas = extraFocusAreaNames.filter(
+          (name) => !existingExtrasMap.has(name.toLowerCase())
+        );
+        // Insert new extra focus areas into the "extra_focus_areas" table
+        let insertedExtras = [];
+        if (newExtraFocusAreas.length > 0) {
+          const { data: newExtras, error: newExtrasError } = await supabase
+            .from("extra_focus_areas")
+            .insert(newExtraFocusAreas.map((name) => ({ name })))
+            .select("id, name");
+          if (newExtrasError) {
+            console.error(
+              "Error inserting new extra focus areas:",
+              newExtrasError.message
+            );
+            throw newExtrasError;
+          }
+          insertedExtras = newExtras;
+          console.log("Inserted new extra focus areas:", newExtras);
+        }
+        // Combine existing and newly inserted extra focus areas
+        const allExtras = [...existingExtras, ...insertedExtras];
+        // Insert into "profile_extra_focus_areas"
+        const { error: profileExtraFocusAreasError } = await supabase
+          .from("profile_extra_focus_areas")
+          .insert(
+            allExtras.map((extra) => ({
+              profile_id: userId,
+              extra_focus_area_id: extra.id,
+            }))
+          );
+        if (profileExtraFocusAreasError) {
+          console.error(
+            "Error inserting into profile_extra_focus_areas:",
+            profileExtraFocusAreasError.message
+          );
+          throw profileExtraFocusAreasError;
+        }
+        console.log(
+          "Inserted extra focus areas into profile_extra_focus_areas:",
+          allExtras
+        );
+      }
     }
 
-    console.log("Company profile created successfully");
+    // -------------------- STUDENT --------------------
+
+    // Step 2: Insert student data
+    if (field.toLowerCase() === "student") {
+      const { error: studentError } = await supabase.from("students").insert([
+        {
+          profile_id: userId,
+          telephone_number: telephone,
+          description,
+          portfolio_github: portfolio_github,
+          linkedin,
+          cv_url,
+          other_url,
+          study_program: studyProgram,
+        },
+      ]);
+
+      if (studentError) {
+        console.error("Student insert error:", studentError.message);
+        return redirect("/error");
+      }
+
+      console.log("Student data inserted successfully");
+    }
+
+    // Step 3: Insert into the "profile_field" table
+    const { data: fieldData, error: fieldError } = await supabase
+      .from("fields")
+      .select("id")
+      .eq("name", field)
+      .single();
+
+    if (fieldError || !fieldData) {
+      console.error(
+        "Field lookup error:",
+        fieldError?.message || "Field not found"
+      );
+      return redirect("/error");
+    }
+
+    const fieldId = fieldData.id;
+
+    const { error: profileFieldError } = await supabase
+      .from("profile_field")
+      .insert([
+        {
+          profile_id: userId,
+          field_id: fieldId,
+        },
+      ]);
+
+    if (profileFieldError) {
+      console.error("Profile field insert error:", profileFieldError.message);
+      return redirect("/error");
+    }
+
+    console.log(`Linked field "${field}" to user ${userId}`);
+
+    // Step 3: Process selected programs (software)
+    if (selectedPrograms && selectedPrograms.length > 0) {
+      console.log("Processing selected programs:", selectedPrograms);
+
+      // Fetch all software from the "software" table
+      const { data: allSoftware, error: softwareError } = await supabase
+        .from("software")
+        .select("id, name");
+
+      if (softwareError) {
+        console.error(
+          "Error fetching software from database:",
+          softwareError.message
+        );
+        throw softwareError;
+      }
+
+      // Create a map of software names to IDs
+      const softwareMap = new Map();
+      allSoftware.forEach((software) => {
+        softwareMap.set(software.name.toLowerCase(), software.id);
+      });
+
+      // Separate existing and extra software
+      const matchedSoftwareIds = [];
+      const extraSoftwareNames = [];
+
+      selectedPrograms.forEach((program) => {
+        const normalizedProgram = program.toLowerCase();
+        if (softwareMap.has(normalizedProgram)) {
+          matchedSoftwareIds.push(softwareMap.get(normalizedProgram));
+        } else {
+          extraSoftwareNames.push(program);
+        }
+      });
+
+      // Insert matched software into "profile_software"
+      if (matchedSoftwareIds.length > 0) {
+        const { error: profileSoftwareError } = await supabase
+          .from("profile_software")
+          .insert(
+            matchedSoftwareIds.map((softwareId) => ({
+              profile_id: userId,
+              software_id: softwareId,
+            }))
+          );
+
+        if (profileSoftwareError) {
+          console.error(
+            "Error inserting into profile_software:",
+            profileSoftwareError.message
+          );
+          throw profileSoftwareError;
+        }
+
+        console.log(
+          "Inserted matched software into profile_software:",
+          matchedSoftwareIds
+        );
+      }
+
+      // Handle extra software
+      if (extraSoftwareNames.length > 0) {
+        console.log("Processing extra software:", extraSoftwareNames);
+
+        // Check if extra software already exists in the "extra_software" table
+        const { data: existingExtras, error: existingExtrasError } =
+          await supabase
+            .from("extra_software")
+            .select("id, name")
+            .in("name", extraSoftwareNames);
+
+        if (existingExtrasError) {
+          console.error(
+            "Error fetching existing extra software:",
+            existingExtrasError.message
+          );
+          throw existingExtrasError;
+        }
+
+        // Create a map of existing extra software names to IDs
+        const existingExtrasMap = new Map();
+        existingExtras.forEach((extra) => {
+          existingExtrasMap.set(extra.name.toLowerCase(), extra.id);
+        });
+
+        // Find new extra software to insert
+        const newExtraSoftware = extraSoftwareNames.filter(
+          (name) => !existingExtrasMap.has(name.toLowerCase())
+        );
+
+        // Insert new extra software into the "extra_software" table
+        let insertedExtras = [];
+        if (newExtraSoftware.length > 0) {
+          const { data: newExtras, error: newExtrasError } = await supabase
+            .from("extra_software")
+            .insert(newExtraSoftware.map((name) => ({ name })))
+            .select("id, name");
+
+          if (newExtrasError) {
+            console.error(
+              "Error inserting new extra software:",
+              newExtrasError.message
+            );
+            throw newExtrasError;
+          }
+
+          insertedExtras = newExtras;
+          console.log("Inserted new extra software:", newExtras);
+        }
+
+        // Combine existing and newly inserted extra software
+        const allExtras = [...existingExtras, ...insertedExtras];
+
+        // Insert into "profile_extra_software"
+        const { error: profileExtraSoftwareError } = await supabase
+          .from("profile_extra_software")
+          .insert(
+            allExtras.map((extra) => ({
+              profile_id: userId,
+              extra_software_id: extra.id,
+            }))
+          );
+
+        if (profileExtraSoftwareError) {
+          console.error(
+            "Error inserting into profile_extra_software:",
+            profileExtraSoftwareError.message
+          );
+          throw profileExtraSoftwareError;
+        }
+
+        console.log(
+          "Inserted extra software into profile_extra_software:",
+          allExtras
+        );
+      }
+    }
+
+    // Step 4: Process selected skills
+    if (selectedSkills && selectedSkills.length > 0) {
+      console.log("Processing selected skills:", selectedSkills);
+
+      // Fetch all skills from the "skills" table
+      const { data: allSkills, error: skillsError } = await supabase
+        .from("skills")
+        .select("id, name");
+
+      if (skillsError) {
+        console.error(
+          "Error fetching skills from database:",
+          skillsError.message
+        );
+        throw skillsError;
+      }
+
+      // Create a map of skill names to IDs
+      const skillsMap = new Map();
+      allSkills.forEach((skill) => {
+        skillsMap.set(skill.name.toLowerCase(), skill.id);
+      });
+
+      // Separate existing and extra skills
+      const matchedSkillIds = [];
+      const extraSkillNames = [];
+
+      selectedSkills.forEach((skill) => {
+        const normalizedSkill = skill.toLowerCase();
+        if (skillsMap.has(normalizedSkill)) {
+          matchedSkillIds.push(skillsMap.get(normalizedSkill));
+        } else {
+          extraSkillNames.push(skill);
+        }
+      });
+
+      // Insert matched skills into "profile_skill"
+      if (matchedSkillIds.length > 0) {
+        const { error: profileSkillError } = await supabase
+          .from("profile_skill")
+          .insert(
+            matchedSkillIds.map((skillId) => ({
+              profile_id: userId,
+              skill_id: skillId,
+            }))
+          );
+
+        if (profileSkillError) {
+          console.error(
+            "Error inserting into profile_skill:",
+            profileSkillError.message
+          );
+          throw profileSkillError;
+        }
+
+        console.log(
+          "Inserted matched skills into profile_skill:",
+          matchedSkillIds
+        );
+      }
+
+      // Handle extra skills
+      if (extraSkillNames.length > 0) {
+        console.log("Processing extra skills:", extraSkillNames);
+
+        // Check if extra skills already exist in the "extra_skills" table
+        const { data: existingExtras, error: existingExtrasError } =
+          await supabase
+            .from("extra_skills")
+            .select("id, name")
+            .in("name", extraSkillNames);
+
+        if (existingExtrasError) {
+          console.error(
+            "Error fetching existing extra skills:",
+            existingExtrasError.message
+          );
+          throw existingExtrasError;
+        }
+
+        // Create a map of existing extra skill names to IDs
+        const existingExtrasMap = new Map();
+        existingExtras.forEach((extra) => {
+          existingExtrasMap.set(extra.name.toLowerCase(), extra.id);
+        });
+
+        // Find new extra skills to insert
+        const newExtraSkills = extraSkillNames.filter(
+          (name) => !existingExtrasMap.has(name.toLowerCase())
+        );
+
+        // Insert new extra skills into the "extra_skills" table
+        let insertedExtras = [];
+        if (newExtraSkills.length > 0) {
+          const { data: newExtras, error: newExtrasError } = await supabase
+            .from("extra_skills")
+            .insert(newExtraSkills.map((name) => ({ name })))
+            .select("id, name");
+
+          if (newExtrasError) {
+            console.error(
+              "Error inserting new extra skills:",
+              newExtrasError.message
+            );
+            throw newExtrasError;
+          }
+
+          insertedExtras = newExtras;
+          console.log("Inserted new extra skills:", newExtras);
+        }
+
+        // Combine existing and newly inserted extra skills
+        const allExtras = [...existingExtras, ...insertedExtras];
+
+        // Insert into "profile_extra_skill"
+        const { error: profileExtraSkillError } = await supabase
+          .from("profile_extra_skill")
+          .insert(
+            allExtras.map((extra) => ({
+              profile_id: userId,
+              extra_skill_id: extra.id,
+            }))
+          );
+
+        if (profileExtraSkillError) {
+          console.error(
+            "Error inserting into profile_extra_skill:",
+            profileExtraSkillError.message
+          );
+          throw profileExtraSkillError;
+        }
+
+        console.log(
+          "Inserted extra skills into profile_extra_skill:",
+          allExtras
+        );
+      }
+    }
+
     revalidatePath("/", "layout");
-    return redirect("/register/success");
+    return redirect("/login");
   } catch (err) {
     console.error("Unexpected error:", err);
-    return redirect("/register/error");
+    return redirect("/error");
   }
 }
-*/

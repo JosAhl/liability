@@ -5,6 +5,12 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "/utils/supabase/server";
 
+export async function login(formData) {
+  const supabase = await createClient();
+  // Your login logic here
+  console.log("Logging in:", formData);
+}
+
 export async function signup(formData) {
   const supabase = await createClient();
 

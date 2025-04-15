@@ -1,0 +1,65 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 64px;
+}
+
+.image-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: 40%;
+}
+
+.form-container, .registration-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 64px;
+    width: 100%;
+}
+
+.form-container h5, .registration-container h5 {
+    color: var(--Primary-Blue);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: font/weight/Thin;
+    font-size: var(--6, 24px);
+    font-style: normal;
+    font-weight: 700;
+    line-height: 40px;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.password-text {
+    color: var(--Neutral-20);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+    font-family: font/weight/Thin;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: var(--6, 24px); /* 133.333% */
+    letter-spacing: 0.5px;
+}
+
+.checkbox-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.form-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
+}

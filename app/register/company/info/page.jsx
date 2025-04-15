@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
-import CheckboxButtons from "@/components/CheckboxButtons";
 import FormInput from "@/components/FormInput";
 
 export default function StudentPersonalInfoPage() {
@@ -11,46 +10,25 @@ export default function StudentPersonalInfoPage() {
     first_name: "",
     last_name: "",
     email: "",
-    telephone_number: "",
     password: "",
-    //field: [],
-    studyProgram: "",
   });
-
-  const studyProgram = ["Digital Design", "Webbutveckling"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (e) => {
-    const { name, value, checked } = e.target;
-
-    if (checked) {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: [...prev[name], value],
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: prev[name].filter((item) => item !== value),
-      }));
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     // Merge with previous data and save
     const previousData = JSON.parse(
-      localStorage.getItem("studentFormData") || "{}"
+      localStorage.getItem("companyFormData") || "{}"
     );
     const updatedData = { ...previousData, ...formData };
-    localStorage.setItem("studentFormData", JSON.stringify(updatedData));
+    localStorage.setItem("companyFormData", JSON.stringify(updatedData));
 
     // Navigate to next step
-    router.push("/register/student/software-preferences");
+    router.push("/register/company/company");
   };
 
   return (
@@ -60,7 +38,7 @@ export default function StudentPersonalInfoPage() {
       </div>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
-          <h5>Namn</h5>
+          <h5>Förnamn</h5>
           <FormInput
             type="text"
             label="Förnamn"
@@ -72,6 +50,7 @@ export default function StudentPersonalInfoPage() {
             required
           />
 
+          <h5>Efternamn</h5>
           <FormInput
             type="text"
             label="Efternamn (frivilligt)"
@@ -82,17 +61,7 @@ export default function StudentPersonalInfoPage() {
             onChange={handleChange}
           />
 
-          <FormInput
-            type="tel"
-            label="Telefonnummer (frivilligt)"
-            name="telephone_number"
-            id="telephone_number"
-            placeholder="070-123 45 67"
-            value={formData.telephone_number}
-            onChange={handleChange}
-          />
-
-          <h5>Skapa konto</h5>
+          <h5>Skapa konto *</h5>
 
           <FormInput
             type="email"
@@ -117,18 +86,6 @@ export default function StudentPersonalInfoPage() {
           />
           <p className="password-text">Måste innehålla minst 12 tecken</p>
 
-          <h5>Vad pluggar du? *</h5>
-
-          <div className="form-group">
-            <CheckboxButtons
-              options={studyProgram}
-              name="studyProgram"
-              selectedValues={formData.studyProgram || []}
-              onChange={handleCheckboxChange}
-              className="mt-2"
-            />
-          </div>
-
           <div className="form-navigation">
             <Button
               text="<-"
@@ -145,7 +102,7 @@ export default function StudentPersonalInfoPage() {
               color="red"
               withArrow={true}
               type="submit"
-              href="/register/student/software-preferences"
+              //href="/register/company/company"
             />
           </div>
         </form>

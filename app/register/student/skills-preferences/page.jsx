@@ -6,14 +6,14 @@ import Button from "@/components/Button";
 import CheckboxButtons from "@/components/CheckboxButtons";
 import FormInput from "@/components/FormInput";
 
-export default function StudentSoftwarePreferencesPage() {
+export default function StudentSkillsPreferencesPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    selectedPrograms: [],
-    extraSoftware: "",
+    skills: [],
+    extraSkills: "",
   });
 
-  const [softwareOptions, setSoftwareOptions] = useState([]);
+  const [skillOptions, setSkillOptions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Load previous form data
@@ -23,39 +23,56 @@ export default function StudentSoftwarePreferencesPage() {
       const parsedData = JSON.parse(savedData);
       setFormData((prev) => ({
         ...prev,
-        selectedPrograms:
-          parsedData.selectedPrograms || parsedData.software || [],
-        extraSoftware: parsedData.extraSoftware || "",
+        skills: parsedData.skills || [],
+        extraSkills: parsedData.extraSkills || "",
       }));
       console.log("Previous data loaded");
     }
 
-    // Fetch software options from database
-    async function fetchSoftware() {
+    // Fetch skill options from database
+    async function fetchSkills() {
       try {
         const supabase = createClient();
-        const { data, error } = await supabase.from("software").select("name");
+        const { data, error } = await supabase.from("skills").select("name");
 
         if (error) {
           throw error;
         }
 
         if (data && data.length > 0) {
-          setSoftwareOptions(data.map((item) => item.name));
+          setSkillOptions(data.map((item) => item.name));
         } else {
           // Fallback to default options if no data
-          setSoftwareOptions(["Fig", "Illus", "Cinema", "Word"]);
+          setSkillOptions([
+            "Ui/Ux Design",
+            "HTML",
+            "CSS",
+            "Illustrationer",
+            "Motion",
+            "3D",
+            "Typografi",
+            "Filmredigering",
+          ]);
         }
       } catch (error) {
-        console.error("Error fetching software:", error);
+        console.error("Error fetching skills:", error);
         // Fallback to default options if fetch fails
-        setSoftwareOptions(["Fig", "Illus", "Cinema", "Word"]);
+        setSkillOptions([
+          "Ui/Ux",
+          "HTML",
+          "CSS",
+          "Illustrationer",
+          "Motion",
+          "3D",
+          "Typo",
+          "Film",
+        ]);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchSoftware();
+    fetchSkills();
   }, []);
 
   const handleChange = (e) => {
@@ -82,13 +99,13 @@ export default function StudentSoftwarePreferencesPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const extraItems = formData.extraSoftware
+    const extraItems = formData.extraSkills
       .split(/[,\n]/)
       .map((item) => item.trim())
       .filter((item) => item !== "");
 
-    // Combine programs + extra software here
-    const combinedPrograms = [...formData.selectedPrograms, ...extraItems];
+    // Combine skills + extra skills here
+    const combinedSkills = [...formData.skills, ...extraItems];
 
     // Merge with previous data and save
     const previousData = JSON.parse(
@@ -96,40 +113,44 @@ export default function StudentSoftwarePreferencesPage() {
     );
     const updatedData = {
       ...previousData,
-      selectedPrograms: combinedPrograms,
-      extraSoftware: formData.extraSoftware,
+      skills: combinedSkills,
+      extraSkills: formData.extraSkills,
     };
 
     localStorage.setItem("studentFormData", JSON.stringify(updatedData));
-    router.push("/register/student/skills-preferences");
+    router.push("/register/student/links");
   };
 
   return (
     <div className="wrapper">
       <div className="image-container">
-        <img src="/form-step-3.svg" alt="Progress bar step 3/6" />
+        <img src="/form-step-4.svg" alt="Progress bar step 4/6" />
       </div>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <h5>Program (Välj minst 1)</h5>
-            <CheckboxButtons
-              options={softwareOptions}
-              name="selectedPrograms"
-              selectedValues={formData.selectedPrograms || []}
-              onChange={handleCheckboxChange}
-              className="mt-2"
-            />
+            <h5>Kompetenser (Välj minst 2)</h5>
+            {loading ? (
+              <p>Laddar kompetenser...</p>
+            ) : (
+              <CheckboxButtons
+                options={skillOptions}
+                name="skills"
+                selectedValues={formData.skills || []}
+                onChange={handleCheckboxChange}
+                className="mt-2"
+              />
+            )}
           </div>
 
           <div className="form-group">
             <FormInput
               type="textarea"
-              label="Lägg till annat program"
-              name="extraSoftware"
-              id="extraSoftware"
+              label="Lägg till annan kompetens"
+              name="extraSkills"
+              id="extraSkills"
               placeholder="Annat"
-              value={formData.extraSoftware}
+              value={formData.extraSkills}
               onChange={handleChange}
             />
           </div>
@@ -140,7 +161,7 @@ export default function StudentSoftwarePreferencesPage() {
               className="primary"
               variant="default"
               color="blue"
-              href="/register/student/personal-info"
+              href="/register/student/software-preferences"
             />
             <Button
               text="Fortsätt"
@@ -149,6 +170,7 @@ export default function StudentSoftwarePreferencesPage() {
               color="red"
               withArrow={true}
               type="submit"
+              disabled={loading}
             />
           </div>
         </form>

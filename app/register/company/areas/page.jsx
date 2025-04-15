@@ -6,56 +6,60 @@ import Button from "@/components/Button";
 import CheckboxButtons from "@/components/CheckboxButtons";
 import FormInput from "@/components/FormInput";
 
-export default function StudentSoftwarePreferencesPage() {
+export default function StudentFocusAreasPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    selectedPrograms: [],
-    extraSoftware: "",
+    selectedFocusAreas: [],
+    extraFocusArea: "",
   });
 
-  const [softwareOptions, setSoftwareOptions] = useState([]);
+  const [focusAreaOptions, setFocusAreaOptions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Load previous form data
   useEffect(() => {
-    const savedData = localStorage.getItem("studentFormData");
+    const savedData = localStorage.getItem("companyFormData");
     if (savedData) {
       const parsedData = JSON.parse(savedData);
       setFormData((prev) => ({
         ...prev,
-        selectedPrograms:
-          parsedData.selectedPrograms || parsedData.software || [],
-        extraSoftware: parsedData.extraSoftware || "",
+        selectedFocusAreas:
+          parsedData.selectedFocusAreas || parsedData.focus_areas || [],
+        extraFocusArea: parsedData.extraFocusArea || "",
       }));
       console.log("Previous data loaded");
     }
 
     // Fetch software options from database
-    async function fetchSoftware() {
+    async function fetchFocusAreas() {
       try {
         const supabase = createClient();
-        const { data, error } = await supabase.from("software").select("name");
+        console.log("Supabase client initialized:", supabase);
+        const { data, error } = await supabase
+          .from("focus_areas")
+          .select("name");
 
         if (error) {
+          console.error("Supabase query error:", error.message);
           throw error;
         }
 
         if (data && data.length > 0) {
-          setSoftwareOptions(data.map((item) => item.name));
+          setFocusAreaOptions(data.map((item) => item.name));
         } else {
           // Fallback to default options if no data
-          setSoftwareOptions(["Fig", "Illus", "Cinema", "Word"]);
+          setFocusAreaOptions(["Fig", "Illus", "Cinema", "Word"]);
         }
       } catch (error) {
-        console.error("Error fetching software:", error);
+        console.error("Error fetching focus area:", error);
         // Fallback to default options if fetch fails
-        setSoftwareOptions(["Fig", "Illus", "Cinema", "Word"]);
+        setFocusAreaOptions(["Fig", "Illus", "Cinema", "Word"]);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchSoftware();
+    fetchFocusAreas();
   }, []);
 
   const handleChange = (e) => {
@@ -82,26 +86,26 @@ export default function StudentSoftwarePreferencesPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const extraItems = formData.extraSoftware
+    const extraItems = formData.extraFocusArea
       .split(/[,\n]/)
       .map((item) => item.trim())
       .filter((item) => item !== "");
 
     // Combine programs + extra software here
-    const combinedPrograms = [...formData.selectedPrograms, ...extraItems];
+    const combinedFocusAreas = [...formData.selectedFocusAreas, ...extraItems];
 
     // Merge with previous data and save
     const previousData = JSON.parse(
-      localStorage.getItem("studentFormData") || "{}"
+      localStorage.getItem("companyFormData") || "{}"
     );
     const updatedData = {
       ...previousData,
-      selectedPrograms: combinedPrograms,
-      extraSoftware: formData.extraSoftware,
+      selectedFocusAreas: combinedFocusAreas,
+      extraFocusArea: formData.extraFocusArea,
     };
 
-    localStorage.setItem("studentFormData", JSON.stringify(updatedData));
-    router.push("/register/student/skills-preferences");
+    localStorage.setItem("companyFormData", JSON.stringify(updatedData));
+    router.push("/register/success");
   };
 
   return (
@@ -112,11 +116,11 @@ export default function StudentSoftwarePreferencesPage() {
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <h5>Program (Välj minst 1)</h5>
+            <h5>Fokusområden (Välj minst 2)</h5>
             <CheckboxButtons
-              options={softwareOptions}
-              name="selectedPrograms"
-              selectedValues={formData.selectedPrograms || []}
+              options={focusAreaOptions}
+              name="selectedFocusAreas"
+              selectedValues={formData.selectedFocusAreas || []}
               onChange={handleCheckboxChange}
               className="mt-2"
             />
@@ -125,11 +129,11 @@ export default function StudentSoftwarePreferencesPage() {
           <div className="form-group">
             <FormInput
               type="textarea"
-              label="Lägg till annat program"
-              name="extraSoftware"
-              id="extraSoftware"
+              label="Lägg till andra fokusområden"
+              name="extraFocusArea"
+              id="extraFocusArea"
               placeholder="Annat"
-              value={formData.extraSoftware}
+              value={formData.extraFocusArea}
               onChange={handleChange}
             />
           </div>
@@ -140,7 +144,7 @@ export default function StudentSoftwarePreferencesPage() {
               className="primary"
               variant="default"
               color="blue"
-              href="/register/student/personal-info"
+              href="/register/company/image"
             />
             <Button
               text="Fortsätt"
