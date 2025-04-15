@@ -7,8 +7,7 @@ import FormInput from "@/components/FormInput";
 export default function StudentSoftwarePreferencesPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    company_url: "",
-    company_other_links: "",
+    avatar_url: "",
   });
 
   // Load previous form data
@@ -24,10 +23,10 @@ export default function StudentSoftwarePreferencesPage() {
     }
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handlePreview = (e) => {
+    image.src = URL.createObjectURL(e.target.files[0]);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -35,49 +34,33 @@ export default function StudentSoftwarePreferencesPage() {
     const previousData = JSON.parse(
       localStorage.getItem("companyFormData") || "{}"
     );
-    const updatedData = {
-      ...previousData,
-      company_url: formData.company_url,
-      company_other_links: formData.company_other_links,
-    };
+    const updatedData = { ...previousData, ...formData };
     localStorage.setItem("companyFormData", JSON.stringify(updatedData));
 
     // Navigate to next step
-    router.push(
-      "/register/company/image"
-    ); /* ----------------------------------------- lägg till nästa steg */
+    router.push("/register/company/areas");
   };
 
   return (
     <div className="wrapper">
       <div className="image-container">
-        <img src="/form-step-6.svg" alt="Progress bar step 6/6" />
+        <img src="/form-step-5.svg" alt="Progress bar step 5/6" />
       </div>
       <div className="form-container">
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <FormInput
-              type="url"
-              label="Hemsida (Frivilligt)"
-              name="company_url"
-              id="company_url"
-              placeholder="wwww.alexdesign.com"
-              withLink={true}
-              value={formData.company_url}
-              onChange={handleChange}
-            />
-
-            <FormInput
-              type="url"
-              label="Övriga länkar (Frivilligt)"
-              name="company_other_links"
-              id="company_other_links"
-              placeholder="https://www.linkedin.com/in/företagsnamn"
-              withLink={true}
-              value={formData.company_other_links}
-              onChange={handleChange}
-            />
+          <div className="image-preview">
+            <img id="image" alt="Your picture" width="100" height="100" />
           </div>
+          <FormInput
+            type="file"
+            label="Ladda upp profilbild (Frivilligt)"
+            name="avatar_url"
+            id="avatar_url"
+            placeholder="Ladda upp fil (png, jpeg)"
+            withImage={true}
+            value={formData.avatar_url}
+            onChange={handlePreview}
+          />
 
           <div className="form-navigation">
             <Button
@@ -85,8 +68,9 @@ export default function StudentSoftwarePreferencesPage() {
               className="primary"
               variant="default"
               color="blue"
-              href="/register/company/company"
+              href="/register/company/links"
             />
+
             <Button
               text="Fortsätt"
               className="primary"
