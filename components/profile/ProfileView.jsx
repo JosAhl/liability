@@ -59,15 +59,23 @@ const ProfileView = () => {
         fetchProfile();
     }, []);
 
+    const student = profile?.students?.[0];
+
     const allSoftware = [
         ...(profile?.profile_software || []).map(item => item.software?.name),
         ...(profile?.profile_extra_software || []).map(item => item.extra_software?.name),
       ].filter(Boolean); 
 
-      const allSkills = [
+    const allSkills = [
         ...(profile?.profile_skill || []).map((item) => item.skills?.name),
         ...(profile?.profile_extra_skill || []).map((item) => item.extra_skills?.name),
       ].filter(Boolean);
+
+      const supabaseID = "xfrzjsoxmayndxxygssl";
+      const avatarPath = profile?.avatar_url;
+      const avatarUrl = `https://${supabaseID}.supabase.co/storage/v1/object/sign/${avatarPath}`;
+      
+    console.log("Avatar URL:", avatarUrl);
 
     if (!profile) return <p>Laddar profil...</p>;
 
@@ -87,9 +95,9 @@ const ProfileView = () => {
               <h1 className="profile-view-header-h1">
                 {profile?.first_name} {profile?.last_name}
               </h1>
-              <h2 className="profile-view-header-h2">Titel</h2> {/* Add title later if available */}
+              <h2 className="profile-view-header-h2">{profile?.profile_field?.[0]?.fields?.name}</h2>
             </div>
-            <img className="profile-view-header-img" src="/jessica-tuttle-TlB94lT3PgM-unsplash.jpeg" alt="" />
+            <img className="profile-view-header-img" src={avatarUrl} alt="" />
           </div>
       
           {/* Kompetenser */}
@@ -117,31 +125,64 @@ const ProfileView = () => {
           </div>
       
           {/* About */}
-          <div className="profile-view-about">
-            <h3 className="profile-about-h3">Om mig</h3>
-            <p className="profile-about-p">
-              Jag är en självständig och nyfiken person...
-            </p>
-          </div>
+          {student?.description && (
+            <div className="profile-view-about">
+                <h3 className="profile-about-h3">Om mig</h3>
+                <p className="profile-about-p">{student.description}</p>
+            </div>
+        )}
       
           {/* Contact */}
+          {(student?.telephone_number || profile?.email || student?.linkedin) && (
           <div className="profile-view-contact">
             <h3 className="profile-contact-h3">Kontakt</h3>
             <div className="profile-contact-data">
-              <a href=""><img src="/icon/Phone.png" alt="" />07012345678</a>
-              <a href=""><img src="/icon/contact-envelope.png" alt="" />evsve0611@goteborg.skola</a>
-              <a href=""><img src="/icon/contact-linkedinLogo.png" alt="" />Evasvensson</a>
+            {student?.telephone_number && (
+            <a href={`tel:${student.telephone_number}`}>
+                <img src="/icon/Phone.png" alt="" />
+                {student.telephone_number}
+            </a>
+            )}
+
+            {profile?.email && (
+            <a href={`mailto:${profile.email}`}>
+                <img src="/icon/contact-envelope.png" alt="" />
+                {profile.email}
+            </a>
+            )}
+
+            {student?.linkedin && (
+            <a href={student.linkedin} target="_blank" rel="noopener noreferrer">
+                <img src="/icon/contact-linkedinLogo.png" alt="" />
+                {student.linkedin}
+            </a>
+            )}
             </div>
-          </div>
+          </div> )}
       
           {/* Merits */}
-          <div className="profile-view-merits">
-            <h3 className="profile-merits-h3">Meriter</h3>
-            <div className="merit-container">
-              <div className="merit">Merit 1</div>
-              <div className="merit">Merit 2</div>
+          {(student?.linkedin || student?.portfolio_github) && (
+            <div className="profile-view-merits">
+                <h3 className="profile-merits-h3">Meriter</h3>
+                <div className="merit-container">
+                {student?.linkedin && (
+                    <div className="merit">
+                    <a href={student.linkedin} target="_blank">
+                        LinkedIn-profil
+                    </a>
+                    </div>
+                )}
+                {student?.portfolio_github && (
+                    <div className="merit">
+                    <a href={student.portfolio_github} target="_blank">
+                        GitHub/Portfolio
+                    </a>
+                    </div>
+                )}
+                </div>
             </div>
-          </div>
+)}
+
       
         </section>
       );
